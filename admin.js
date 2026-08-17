@@ -65,8 +65,11 @@ function renderAppointments() {
       <td class="services">${escapeHtml(item.services || '—')}</td>
       <td>${escapeHtml(item.master || '—')}</td>
       <td class="date">${formatDate(item.booking_date)}</td>
-      <td class="time">${escapeHtml(item.booking_time || '—')}</td>
+      <td class="time">${escapeHtml(item.bookinf_time || '—')}</td>
       <td><span class="status status-${safeStatus}">${statusNames[safeStatus]}</span></td>
+      <td class="actions-cell">
+        <button class="delete-btn" type="button" data-delete-id="${escapeAttr(item.id)}" aria-label="Удалить заявку" title="Удалить заявку">🗑</button>
+      </td>
     `;
 
     appointmentsBody.appendChild(tr);
@@ -91,7 +94,7 @@ async function loadAppointments() {
   try {
     const { data, error } = await supabaseClient
       .from('appointments')
-      .select('id,name,phone,services,master,booking_date,booking_time,status,created_at')
+      .select('id,name,phone,services,master,booking_date,bookinf_time,status,created_at,salon_id')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -110,6 +113,41 @@ async function loadAppointments() {
   }
 }
 
+async function deleteAppointment(id) {
+  const appointment = appointments.find(item => item.id === id);
+  if (!appointment) return;
+
+  const clientName = appointment.name || 'этого клиента';
+  const confirmed = window.confirm(`Удалить заявку клиента «${clientName}»?\n\nЭто действие нельзя отменить.`);
+  if (!confirmed) return;
+
+  const button = appointmentsBody.querySelector(`[data-delete-id="${CSS.escape(id)}"]`);
+  if (button) {
+    button.disabled = true;
+    button.textContent = '…';
+  }
+
+  try {
+    const { error } = await supabaseClient
+      .from('appointments')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    appointments = appointments.filter(item => item.id !== id);
+    updateStats();
+    renderAppointments();
+  } catch (error) {
+    console.error(error);
+    tableError.textContent = `Не удалось удалить заявку: ${error.message}`;
+    if (button) {
+      button.disabled = false;
+      button.textContent = '🗑';
+    }
+  }
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll('&', '&amp;')
@@ -120,7 +158,7 @@ function escapeHtml(value) {
 }
 
 function escapeAttr(value) {
-  return String(value).replace(/[^0-9+()\-\s]/g, '');
+  return String(value).replace(/[^a-zA-Z0-9_-]/g, '');
 }
 
 loginForm.addEventListener('submit', async (event) => {
@@ -143,6 +181,12 @@ loginForm.addEventListener('submit', async (event) => {
     loginBtn.disabled = false;
     loginBtn.textContent = 'Войти';
   }
+});
+
+appointmentsBody.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-delete-id]');
+  if (!button) return;
+  deleteAppointment(button.dataset.deleteId);
 });
 
 refreshBtn.addEventListener('click', loadAppointments);
