@@ -810,41 +810,26 @@ if (
         // ОТПРАВЛЯЕМ ЗАЯВКУ В SUPABASE
         // ============================================
 
-        const { data, error } =
-          await supabaseClient
+        const { error } = await supabaseClient
+  .from('appointments')
+  .insert([
+    {
+      name: nameInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      services: servicesText,
+      master: state.master,
+      booking_date: state.date.iso,
+      booking_time: state.time,
+      status: 'new'
+    }
+  ]);
 
-            .from('appointments')
+if (error) {
+  console.error('SUPABASE ERROR:', error);
+  throw error;
+}
 
-            .insert([
-
-              {
-
-                name:
-                  nameInput.value.trim(),
-
-                phone:
-                  phoneInput.value.trim(),
-
-                services:
-                  servicesText,
-
-                master:
-                  state.master,
-
-                booking_date:
-                  state.date.iso,
-
-                booking_time:
-                  state.time,
-
-                status:
-                  'new'
-
-              }
-
-            ])
-
-            .select();
+console.log('Заявка успешно отправлена в Supabase');
 
 
         // ============================================
@@ -937,15 +922,21 @@ if (
 
       catch (error) {
 
-        console.error(
-          'Ошибка отправки заявки:',
-          error
-        );
+  console.error(
+    'Ошибка отправки заявки:',
+    error
+  );
 
+  alert(
+    'Ошибка Supabase:\n\n' +
+    (error.message || JSON.stringify(error))
+  );
 
-        alert(
-          'Не удалось отправить заявку. Проверьте подключение и попробуйте ещё раз.'
-        );
+  submitBtn.disabled = false;
+
+  submitBtn.textContent =
+    'Отправить заявку';
+}
 
 
         submitBtn.disabled =
