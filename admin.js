@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://smtufbilfcszuhywswmx.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtdHVmYmlsZmNzenVoeXdzd214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5MzY2NTksImV4cCI6MjEwMjUxMjY1OX0.MSF_EgdAmPYhC8DuLMk5B0Mv8el7NKgv2URzeEKmOfc";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtdHVmYmlsZmNzenVoeXdzd214Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5MzY2NTksImV4cCI6MjEwMjUxMjY1OX0.MSF_EgdAmPYHc8DuLMk5B0Mv8el7NKgv2URzeEKmOfc";
 
 const { createClient } = window.supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -65,7 +65,7 @@ function renderAppointments() {
       <td class="services">${escapeHtml(item.services || '—')}</td>
       <td>${escapeHtml(item.master || '—')}</td>
       <td class="date">${formatDate(item.booking_date)}</td>
-      <td class="time">${escapeHtml(item.bookinf_time || '—')}</td>
+      <td class="time">${escapeHtml(item.booking_time || '—')}</td>
       <td><span class="status status-${safeStatus}">${statusNames[safeStatus]}</span></td>
       <td class="actions-cell">
         <button class="delete-btn" type="button" data-delete-id="${escapeAttr(item.id)}" aria-label="Удалить заявку" title="Удалить заявку">🗑</button>
@@ -94,7 +94,7 @@ async function loadAppointments() {
   try {
     const { data, error } = await supabaseClient
       .from('appointments')
-      .select('id,name,phone,services,master,booking_date,bookinf_time,status,created_at,salon_id')
+      .select('id,name,phone,services,master,booking_date,booking_time,status,created_at,salon_id')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
