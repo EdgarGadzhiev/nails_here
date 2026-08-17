@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Админ-панель — Ногти тут</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <section class="login-card" id="loginCard">
+      <div class="brand">НОГТИ <span>ТУТ</span></div>
+      <div class="eyebrow">ADMIN PANEL</div>
+      <h1>Вход в админ-панель</h1>
+      <p class="muted">Введите данные администратора Supabase.</p>
+
+      <form id="loginForm">
+        <label>
+          Email
+          <input id="email" type="email" autocomplete="username" placeholder="admin@example.com" required>
+        </label>
+        <label>
+          Пароль
+          <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+        </label>
+        <button class="primary-btn" type="submit" id="loginBtn">Войти</button>
+        <div class="error" id="loginError"></div>
+      </form>
+    </section>
+
+    <section class="dashboard" id="dashboard" hidden>
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">ADMIN PANEL</div>
+          <h1>Заявки на запись</h1>
+          <p class="muted" id="adminEmail"></p>
+        </div>
+        <div class="topbar-actions">
+          <button class="secondary-btn" id="refreshBtn">↻ Обновить</button>
+          <button class="ghost-btn" id="logoutBtn">Выйти</button>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span>Всего заявок</span>
+          <strong id="totalCount">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>Новые</span>
+          <strong id="newCount">0</strong>
+        </article>
+        <article class="stat-card">
+          <span>На сегодня</span>
+          <strong id="todayCount">0</strong>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Все записи</h2>
+            <p class="muted">Последние заявки отображаются сверху.</p>
+          </div>
+          <select id="statusFilter">
+            <option value="all">Все статусы</option>
+            <option value="new">Новые</option>
+            <option value="confirmed">Подтверждённые</option>
+            <option value="done">Завершённые</option>
+            <option value="cancelled">Отменённые</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Клиент</th>
+                <th>Телефон</th>
+                <th>Услуги</th>
+                <th>Мастер</th>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="empty" id="emptyState" hidden>
+          <div class="empty-icon">♡</div>
+          <h3>Заявок пока нет</h3>
+          <p>Когда клиент заполнит форму на сайте, заявка появится здесь.</p>
+        </div>
+
+        <div class="loading" id="loadingState">Загрузка заявок…</div>
+        <div class="error table-error" id="tableError"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
