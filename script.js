@@ -4,6 +4,7 @@
 
 const SUPABASE_URL = "https://smtufbilfcszuhywswmx.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_o-blKCBreqQQDzolb9IMCQ_U9Ila5KH";
+const NAILS_HERE_SALON_ID = "027f2a41-f70b-4446-8898-7d110a8cd1bf";
 
 // ======================================================
 // БУРГЕР-МЕНЮ
@@ -251,7 +252,8 @@ if (revealEls.length && 'IntersectionObserver' in window) {
           master: state.master,
           booking_date: state.date.iso,
           booking_time: state.time,
-          status: 'new'
+          status: 'new',
+          salon_id: NAILS_HERE_SALON_ID
         })
       });
 
