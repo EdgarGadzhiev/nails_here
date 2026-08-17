@@ -1,8 +1,8 @@
 const SUPABASE_URL = "https://smtufbilfcszuhywswmx.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_o-blKCBreqQQDzolb9IMCQ_U9Ila5KH";
+const SUPABASE_ANON_KEY = "sb_publishable_o-blKCBreqQQDzol9IMCQ_U9Ila5KH";
 
 const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const loginCard = document.getElementById('loginCard');
 const dashboard = document.getElementById('dashboard');
@@ -89,7 +89,7 @@ async function loadAppointments() {
   appointmentsBody.innerHTML = '';
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('appointments')
       .select('id,name,phone,services,master,booking_date,booking_time,status,created_at')
       .order('created_at', { ascending: false });
@@ -133,10 +133,11 @@ loginForm.addEventListener('submit', async (event) => {
   const password = document.getElementById('password').value;
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) throw error;
     showDashboard(data.user);
   } catch (error) {
+    console.error(error);
     loginError.textContent = error.message || 'Не удалось войти.';
   } finally {
     loginBtn.disabled = false;
@@ -148,17 +149,17 @@ refreshBtn.addEventListener('click', loadAppointments);
 statusFilter.addEventListener('change', renderAppointments);
 
 logoutBtn.addEventListener('click', async () => {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   showLogin();
 });
 
-supabase.auth.onAuthStateChange((_event, session) => {
+supabaseClient.auth.onAuthStateChange((_event, session) => {
   if (session?.user) showDashboard(session.user);
   else showLogin();
 });
 
 (async function init() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabaseClient.auth.getSession();
   if (data.session?.user) showDashboard(data.session.user);
   else showLogin();
 })();
