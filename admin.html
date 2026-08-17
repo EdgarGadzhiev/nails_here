@@ -63,13 +63,18 @@
             <h2>Все записи</h2>
             <p class="muted">Последние заявки отображаются сверху.</p>
           </div>
-          <select id="statusFilter">
-            <option value="all">Все статусы</option>
-            <option value="new">Новые</option>
-            <option value="confirmed">Подтверждённые</option>
-            <option value="done">Завершённые</option>
-            <option value="cancelled">Отменённые</option>
-          </select>
+          <div class="filters">
+            <select id="salonFilter" hidden aria-label="Выбор салона">
+              <option value="all">Все салоны</option>
+            </select>
+            <select id="statusFilter">
+              <option value="all">Все статусы</option>
+              <option value="new">Новые</option>
+              <option value="confirmed">Подтверждённые</option>
+              <option value="done">Завершённые</option>
+              <option value="cancelled">Отменённые</option>
+            </select>
+          </div>
         </div>
 
         <div class="table-wrap">
@@ -103,6 +108,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="admin.js?v=20260818-2"></script>
+  <script src="admin.js?v=20260818-3"></script>
 </body>
 </html>
