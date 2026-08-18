@@ -47,11 +47,16 @@
       .map(button => document.getElementById(button.dataset.target))
       .filter(section => section && !section.hidden);
 
-    const scrollPosition = window.scrollY + 150;
-    let activeId = sections[sections.length - 1]?.id;
+    if (!sections.length) return;
+
+    // Активируем раздел только тогда, когда его верхняя граница
+    // дошла до нижней границы sticky-навигации.
+    const navBottom = dashboardNav.getBoundingClientRect().bottom;
+    let activeId = sections[0].id;
 
     for (const section of sections) {
-      if (section.offsetTop <= scrollPosition) {
+      const top = section.getBoundingClientRect().top;
+      if (top <= navBottom + 8) {
         activeId = section.id;
       }
     }
