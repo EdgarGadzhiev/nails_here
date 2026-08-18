@@ -15,29 +15,39 @@
     });
   }
 
-  function updateRoleBadge() {
+  function updateRoleUI() {
     if (!roleBadge || typeof currentProfile === 'undefined') return false;
 
     if (!currentProfile?.role) {
       roleBadge.hidden = true;
+      if (dashboardNav) dashboardNav.hidden = true;
       return false;
     }
 
     roleBadge.textContent = roleNames[currentProfile.role] || currentProfile.role;
     roleBadge.hidden = false;
 
-    const canNavigate =
-      currentProfile.role === 'super_admin' ||
-      currentProfile.role === 'salon_owner';
+    const visibleTargets = {
+      super_admin: ['salonManagement', 'peopleManagement', 'appointmentsPanel'],
+      salon_owner: ['peopleManagement', 'appointmentsPanel'],
+      salon_admin: []
+    }[currentProfile.role] || [];
 
-    if (dashboardNav) dashboardNav.hidden = !canNavigate;
+    navButtons.forEach(button => {
+      button.hidden = !visibleTargets.includes(button.dataset.target);
+    });
+
+    if (dashboardNav) {
+      dashboardNav.hidden = visibleTargets.length === 0;
+    }
+
     return true;
   }
 
   navButtons.forEach(button => {
     button.addEventListener('click', () => {
       const target = document.getElementById(button.dataset.target);
-      if (!target || target.hidden) return;
+      if (!target || target.hidden || button.hidden) return;
 
       setActiveSection(target.id);
 
@@ -55,6 +65,7 @@
     if (!dashboardNav || dashboardNav.hidden) return;
 
     const sections = [...navButtons]
+      .filter(button => !button.hidden)
       .map(button => document.getElementById(button.dataset.target))
       .filter(section => section && !section.hidden);
 
@@ -67,9 +78,6 @@
 
     let activeId = sections[0].id;
 
-    // Последняя секция получает активное состояние, когда пользователь
-    // дошёл до конца страницы, даже если её верх физически нельзя
-    // поднять до контрольной линии.
     if (isAtPageBottom) {
       activeId = sections[sections.length - 1].id;
     } else {
@@ -89,7 +97,7 @@
   let attempts = 0;
   const timer = window.setInterval(() => {
     attempts += 1;
-    const ready = updateRoleBadge();
+    const ready = updateRoleUI();
     if (ready) {
       updateActiveSectionByScroll();
       window.clearInterval(timer);
