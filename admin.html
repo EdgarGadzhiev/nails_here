@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Админ-панель — Ногти тут</title>
-  <link rel="stylesheet" href="admin.css?v=20260818-7">
+  <link rel="stylesheet" href="admin.css?v=20260818-8">
 </head>
 <body>
   <main class="admin-shell">
@@ -14,16 +14,9 @@
       <div class="eyebrow">ADMIN PANEL</div>
       <h1>Вход в админ-панель</h1>
       <p class="muted">Введите данные администратора Supabase.</p>
-
       <form id="loginForm">
-        <label>
-          Email
-          <input id="email" type="email" autocomplete="username" placeholder="admin@example.com" required>
-        </label>
-        <label>
-          Пароль
-          <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
-        </label>
+        <label>Email<input id="email" type="email" autocomplete="username" placeholder="admin@example.com" required></label>
+        <label>Пароль<input id="password" type="password" autocomplete="current-password" placeholder="••••••••" required></label>
         <button class="primary-btn" type="submit" id="loginBtn">Войти</button>
         <div class="error" id="loginError"></div>
       </form>
@@ -49,151 +42,70 @@
         <button type="button" data-target="appointmentsPanel">Заявки</button>
       </nav>
 
-      <section class="stats-grid">
-        <article class="stat-card">
-          <span>Всего заявок</span>
-          <strong id="totalCount">0</strong>
-        </article>
-        <article class="stat-card">
-          <span>Новые</span>
-          <strong id="newCount">0</strong>
-        </article>
-        <article class="stat-card">
-          <span>На сегодня</span>
-          <strong id="todayCount">0</strong>
-        </article>
-      </section>
-
       <section class="panel salon-management" id="salonManagement" hidden>
         <div class="panel-head">
-          <div>
-            <h2>Управление салонами</h2>
-            <p class="muted">Только супер-администратор может управлять списком салонов.</p>
-          </div>
+          <div><h2>Управление салонами</h2><p class="muted">Только супер-администратор может управлять списком салонов.</p></div>
           <button class="primary-btn compact-btn" id="addSalonBtn" type="button">+ Добавить салон</button>
         </div>
-
         <div class="salon-form" id="salonFormWrap" hidden>
           <form id="salonForm">
-            <label>
-              Название салона
-              <input id="salonName" type="text" maxlength="120" placeholder="Например, Queen Nails" required>
-            </label>
-            <label>
-              Email владельца
-              <input id="ownerEmail" type="email" autocomplete="off" placeholder="owner@example.com" required>
-            </label>
-            <label>
-              Пароль владельца
-              <input id="ownerPassword" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required>
-            </label>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveSalonBtn">Создать салон и владельца</button>
-              <button class="secondary-btn" type="button" id="cancelSalonBtn">Отмена</button>
-            </div>
+            <label>Название салона<input id="salonName" type="text" maxlength="120" placeholder="Например, Queen Nails" required></label>
+            <label>Email владельца<input id="ownerEmail" type="email" autocomplete="off" placeholder="owner@example.com" required></label>
+            <label>Пароль владельца<input id="ownerPassword" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required></label>
+            <div class="form-actions"><button class="primary-btn" type="submit" id="saveSalonBtn">Создать салон и владельца</button><button class="secondary-btn" type="button" id="cancelSalonBtn">Отмена</button></div>
             <div class="error" id="salonFormError"></div>
           </form>
         </div>
-
         <div class="salon-list" id="salonList"></div>
         <div class="loading salon-loading" id="salonLoading">Загрузка салонов…</div>
-        <div class="empty salon-empty" id="salonEmpty" hidden>
-          <h3>Салонов пока нет</h3>
-          <p>Добавь первый салон, чтобы он появился в системе.</p>
-        </div>
+        <div class="empty salon-empty" id="salonEmpty" hidden><h3>Салонов пока нет</h3><p>Добавь первый салон, чтобы он появился в системе.</p></div>
       </section>
 
       <section class="panel people-management" id="peopleManagement" hidden>
         <div class="panel-head">
-          <div>
-            <h2 id="peopleTitle">Управление администраторами</h2>
-            <p class="muted" id="peopleSubtitle"></p>
-          </div>
+          <div><h2 id="peopleTitle">Управление администраторами</h2><p class="muted" id="peopleSubtitle"></p></div>
           <button class="primary-btn compact-btn" id="addAdminBtn" type="button">+ Добавить администратора</button>
         </div>
-
         <div class="people-form" id="adminFormWrap" hidden>
           <form id="adminForm">
-            <label id="adminSalonField" hidden>
-              Салон
-              <select id="adminSalonSelect"></select>
-            </label>
-            <label>
-              Email администратора
-              <input id="adminEmailInput" type="email" autocomplete="off" placeholder="admin@example.com" required>
-            </label>
-            <label>
-              Пароль администратора
-              <input id="adminPasswordInput" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required>
-            </label>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveAdminBtn">Добавить администратора</button>
-              <button class="secondary-btn" type="button" id="cancelAdminBtn">Отмена</button>
-            </div>
+            <label id="adminSalonField" hidden>Салон<select id="adminSalonSelect"></select></label>
+            <label>Email администратора<input id="adminEmailInput" type="email" autocomplete="off" placeholder="admin@example.com" required></label>
+            <label>Пароль администратора<input id="adminPasswordInput" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required></label>
+            <div class="form-actions"><button class="primary-btn" type="submit" id="saveAdminBtn">Добавить администратора</button><button class="secondary-btn" type="button" id="cancelAdminBtn">Отмена</button></div>
             <div class="error" id="adminFormError"></div>
           </form>
         </div>
-
         <div class="people-list" id="peopleList"></div>
         <div class="loading people-loading" id="peopleLoading">Загрузка пользователей…</div>
-        <div class="empty people-empty" id="peopleEmpty" hidden>
-          <h3>Администраторов пока нет</h3>
-          <p>Добавь первого администратора для этого салона.</p>
-        </div>
+        <div class="empty people-empty" id="peopleEmpty" hidden><h3>Администраторов пока нет</h3><p>Добавь первого администратора для этого салона.</p></div>
       </section>
 
       <section class="panel" id="appointmentsPanel">
         <div class="panel-head">
-          <div>
-            <h2>Все записи</h2>
-            <p class="muted">Последние заявки отображаются сверху.</p>
-          </div>
+          <div><h2>Все записи</h2><p class="muted">Последние заявки отображаются сверху.</p></div>
           <div class="filters">
-            <select id="salonFilter" hidden aria-label="Выбор салона">
-              <option value="all">Все салоны</option>
-            </select>
-            <select id="statusFilter">
-              <option value="all">Все статусы</option>
-              <option value="new">Новые</option>
-              <option value="confirmed">Подтверждённые</option>
-              <option value="done">Завершённые</option>
-              <option value="cancelled">Отменённые</option>
-            </select>
+            <select id="salonFilter" hidden aria-label="Выбор салона"><option value="all">Все салоны</option></select>
+            <select id="statusFilter"><option value="all">Все статусы</option><option value="new">Новые</option><option value="confirmed">Подтверждённые</option><option value="done">Завершённые</option><option value="cancelled">Отменённые</option></select>
           </div>
         </div>
+
+        <section class="stats-grid appointments-stats">
+          <article class="stat-card"><span>Всего заявок</span><strong id="totalCount">0</strong></article>
+          <article class="stat-card"><span>Новые</span><strong id="newCount">0</strong></article>
+          <article class="stat-card"><span>На сегодня</span><strong id="todayCount">0</strong></article>
+        </section>
 
         <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Клиент</th>
-                <th>Телефон</th>
-                <th>Услуги</th>
-                <th>Мастер</th>
-                <th>Дата</th>
-                <th>Время</th>
-                <th>Статус</th>
-                <th>Действия</th>
-              </tr>
-            </thead>
-            <tbody id="appointmentsBody"></tbody>
-          </table>
+          <table><thead><tr><th>Клиент</th><th>Телефон</th><th>Услуги</th><th>Мастер</th><th>Дата</th><th>Время</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="appointmentsBody"></tbody></table>
         </div>
-
-        <div class="empty" id="emptyState" hidden>
-          <div class="empty-icon">♡</div>
-          <h3>Заявок пока нет</h3>
-          <p>Когда клиент заполнит форму на сайте, заявка появится здесь.</p>
-        </div>
-
+        <div class="empty" id="emptyState" hidden><div class="empty-icon">♡</div><h3>Заявок пока нет</h3><p>Когда клиент заполнит форму на сайте, заявка появится здесь.</p></div>
         <div class="loading" id="loadingState">Загрузка заявок…</div>
         <div class="error table-error" id="tableError"></div>
       </section>
     </section>
   </main>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js?v=20260818-6"></script>
-  <script src="admin-ui.js?v=20260818-1"></script>
+  <script src="admin-ui.js?v=20260818-2"></script>
 </body>
 </html>
