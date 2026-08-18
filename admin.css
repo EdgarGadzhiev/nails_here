@@ -100,8 +100,8 @@ input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px r
 .panel-head p { margin: 4px 0 0; }
 .panel-head select { width: auto; min-width: 180px; }
 
-.salon-form { padding: 22px 24px; background: rgba(246,242,239,.55); border-bottom: 1px solid var(--line); }
-.salon-form form { margin: 0; max-width: 620px; }
+.salon-form, .people-form { padding: 22px 24px; background: rgba(246,242,239,.55); border-bottom: 1px solid var(--line); }
+.salon-form form, .people-form form { margin: 0; max-width: 620px; }
 .form-actions { display: flex; gap: 9px; }
 .form-actions .primary-btn, .form-actions .secondary-btn { margin-top: 0; }
 
@@ -111,6 +111,20 @@ input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px r
 .salon-card .salon-id { margin: 0; color: var(--muted); font-size: 11px; word-break: break-all; line-height: 1.5; }
 .salon-card .salon-open { margin-top: 14px; border: 0; background: transparent; padding: 0; color: var(--accent-dark); font-size: 12px; font-weight: 800; }
 .salon-loading, .salon-empty { padding: 30px 20px; }
+
+.people-list { display: grid; gap: 12px; padding: 20px 24px 24px; }
+.people-group { overflow: hidden; border: 1px solid var(--line); background: #fff; border-radius: 18px; }
+.people-group-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px; background: rgba(246,242,239,.55); border-bottom: 1px solid var(--line); }
+.people-group-head h3 { margin: 0; font-size: 17px; }
+.people-group-head p { margin: 3px 0 0; font-size: 12px; }
+.people-group-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.person-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 15px 18px; border-bottom: 1px solid var(--line); }
+.person-row:last-child { border-bottom: 0; }
+.person-row strong { display: block; margin-top: 3px; font-size: 13px; word-break: break-word; }
+.person-role { display: inline-flex; color: var(--accent); font-size: 10px; font-weight: 900; letter-spacing: .12em; }
+.owner-row { background: rgba(155,111,93,.035); }
+.person-empty { padding: 15px 18px; color: var(--muted); font-size: 13px; }
+.people-loading, .people-empty { padding: 30px 20px; }
 
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 980px; }
@@ -163,5 +177,9 @@ tbody tr:hover { background: rgba(246,242,239,.65); }
   .panel-head { align-items: stretch; flex-direction: column; }
   .panel-head select { width: 100%; }
   .salon-list { grid-template-columns: 1fr; padding-left: 16px; padding-right: 16px; }
+  .people-list { padding-left: 16px; padding-right: 16px; }
+  .people-group-head { align-items: stretch; flex-direction: column; }
+  .people-group-actions { justify-content: stretch; }
+  .people-group-actions button { flex: 1; }
   .form-actions { flex-direction: column; }
 }
