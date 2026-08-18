@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Админ-панель — Ногти тут</title>
-  <link rel="stylesheet" href="admin.css?v=20260818-6">
+  <link rel="stylesheet" href="admin.css?v=20260818-7">
 </head>
 <body>
   <main class="admin-shell">
@@ -35,12 +35,19 @@
           <div class="eyebrow">ADMIN PANEL</div>
           <h1>Заявки на запись</h1>
           <p class="muted" id="adminEmail"></p>
+          <div class="role-badge" id="adminRole" hidden></div>
         </div>
         <div class="topbar-actions">
           <button class="secondary-btn" id="refreshBtn">↻ Обновить</button>
           <button class="ghost-btn" id="logoutBtn">Выйти</button>
         </div>
       </header>
+
+      <nav class="dashboard-nav" id="dashboardNav" hidden aria-label="Разделы панели">
+        <button type="button" data-target="salonManagement">Салоны</button>
+        <button type="button" data-target="peopleManagement">Админы</button>
+        <button type="button" data-target="appointmentsPanel">Заявки</button>
+      </nav>
 
       <section class="stats-grid">
         <article class="stat-card">
@@ -135,7 +142,7 @@
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel" id="appointmentsPanel">
         <div class="panel-head">
           <div>
             <h2>Все записи</h2>
@@ -187,5 +194,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="admin.js?v=20260818-6"></script>
+  <script src="admin-ui.js?v=20260818-1"></script>
 </body>
 </html>
