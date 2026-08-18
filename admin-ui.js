@@ -8,6 +8,14 @@
   const roleBadge = document.getElementById('adminRole');
   const dashboardNav = document.getElementById('dashboardNav');
   const navButtons = dashboardNav?.querySelectorAll('[data-target]') || [];
+  const salonManagement = document.getElementById('salonManagement');
+  const peopleManagement = document.getElementById('peopleManagement');
+  const appointmentsPanel = document.getElementById('appointmentsPanel');
+  const salonFilter = document.getElementById('salonFilter');
+  const adminSalonField = document.getElementById('adminSalonField');
+  const addAdminBtn = document.getElementById('addAdminBtn');
+
+  let syncVersion = 0;
 
   function setActiveSection(id) {
     navButtons.forEach(button => {
@@ -15,37 +23,98 @@
     });
   }
 
-  function updateRoleUI() {
-    if (typeof currentProfile === 'undefined') return false;
-
-    const role = currentProfile?.role;
-    if (!role) {
-      if (roleBadge) roleBadge.hidden = true;
-      if (dashboardNav) dashboardNav.hidden = true;
-      return false;
-    }
-
+  function resetRoleUI() {
     if (roleBadge) {
-      roleBadge.textContent = roleNames[role] || role;
-      roleBadge.hidden = false;
+      roleBadge.textContent = '';
+      roleBadge.hidden = true;
     }
 
-    // Показываем только те разделы, которыми реально обладает роль.
+    if (dashboardNav) {
+      dashboardNav.hidden = true;
+      dashboardNav.style.display = 'none';
+    }
+
+    navButtons.forEach(button => {
+      button.hidden = true;
+      button.style.display = 'none';
+      button.classList.remove('is-active');
+    });
+
+    if (salonManagement) salonManagement.hidden = true;
+    if (peopleManagement) peopleManagement.hidden = true;
+    if (salonFilter) salonFilter.hidden = true;
+    if (adminSalonField) adminSalonField.hidden = true;
+    if (addAdminBtn) addAdminBtn.hidden = true;
+  }
+
+  function applyRoleUI(role) {
     const visibleTargets = {
       super_admin: ['salonManagement', 'peopleManagement', 'appointmentsPanel'],
       salon_owner: ['peopleManagement', 'appointmentsPanel'],
       salon_admin: []
     }[role] || [];
 
+    if (roleBadge) {
+      roleBadge.textContent = roleNames[role] || role;
+      roleBadge.hidden = false;
+    }
+
+    if (salonManagement) salonManagement.hidden = role !== 'super_admin';
+    if (peopleManagement) peopleManagement.hidden = !(role === 'super_admin' || role === 'salon_owner');
+    if (salonFilter) salonFilter.hidden = role !== 'super_admin';
+    if (adminSalonField) adminSalonField.hidden = role !== 'super_admin';
+    if (addAdminBtn) addAdminBtn.hidden = !(role === 'super_admin' || role === 'salon_owner');
+
     navButtons.forEach(button => {
-      button.hidden = !visibleTargets.includes(button.dataset.target);
+      const visible = visibleTargets.includes(button.dataset.target);
+      button.hidden = !visible;
+      button.style.display = visible ? '' : 'none';
+      if (!visible) button.classList.remove('is-active');
     });
 
     if (dashboardNav) {
-      dashboardNav.hidden = visibleTargets.length === 0;
+      const hasNavigation = visibleTargets.length > 0;
+      dashboardNav.hidden = !hasNavigation;
+      dashboardNav.style.display = hasNavigation ? '' : 'none';
     }
 
-    return true;
+    if (role === 'salon_admin') {
+      setActiveSection('');
+      return;
+    }
+
+    updateActiveSectionByScroll();
+  }
+
+  async function syncRoleUI() {
+    const version = ++syncVersion;
+
+    try {
+      const { data: userData } = await supabaseClient.auth.getUser();
+      const user = userData?.user;
+
+      if (!user) {
+        resetRoleUI();
+        return;
+      }
+
+      const { data: profile, error } = await supabaseClient.rpc('get_my_profile');
+      if (error) throw error;
+      if (version !== syncVersion) return;
+
+      // Синхронизируем глобальный профиль с тем же пользователем,
+      // которого сейчас вернул Supabase Auth.
+      currentProfile = profile || null;
+
+      if (!profile?.role) {
+        resetRoleUI();
+        return;
+      }
+
+      applyRoleUI(profile.role);
+    } catch (error) {
+      console.error('Не удалось определить роль пользователя:', error);
+    }
   }
 
   navButtons.forEach(button => {
@@ -66,10 +135,10 @@
   });
 
   function updateActiveSectionByScroll() {
-    if (!dashboardNav || dashboardNav.hidden) return;
+    if (!dashboardNav || dashboardNav.hidden || dashboardNav.style.display === 'none') return;
 
     const sections = [...navButtons]
-      .filter(button => !button.hidden)
+      .filter(button => !button.hidden && button.style.display !== 'none')
       .map(button => document.getElementById(button.dataset.target))
       .filter(section => section && !section.hidden);
 
@@ -98,14 +167,20 @@
   window.addEventListener('scroll', updateActiveSectionByScroll, { passive: true });
   window.addEventListener('resize', updateActiveSectionByScroll);
 
-  let attempts = 0;
-  const timer = window.setInterval(() => {
-    attempts += 1;
-    if (updateRoleUI()) {
-      updateActiveSectionByScroll();
-      window.clearInterval(timer);
-    } else if (attempts >= 100) {
-      window.clearInterval(timer);
+  // Не доверяем старому состоянию currentProfile при переключении аккаунтов.
+  // Всегда заново читаем роль у текущего auth.uid().
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT' || !session?.user) {
+      syncVersion += 1;
+      currentProfile = null;
+      resetRoleUI();
+      return;
     }
-  }, 100);
+
+    if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
+      window.setTimeout(syncRoleUI, 0);
+    }
+  });
+
+  window.setTimeout(syncRoleUI, 50);
 })();
