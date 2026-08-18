@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Админ-панель — Ногти тут</title>
-  <link rel="stylesheet" href="admin.css?v=20260818-5">
+  <link rel="stylesheet" href="admin.css?v=20260818-6">
 </head>
 <body>
   <main class="admin-shell">
@@ -96,6 +96,45 @@
         </div>
       </section>
 
+      <section class="panel people-management" id="peopleManagement" hidden>
+        <div class="panel-head">
+          <div>
+            <h2 id="peopleTitle">Управление администраторами</h2>
+            <p class="muted" id="peopleSubtitle"></p>
+          </div>
+          <button class="primary-btn compact-btn" id="addAdminBtn" type="button">+ Добавить администратора</button>
+        </div>
+
+        <div class="people-form" id="adminFormWrap" hidden>
+          <form id="adminForm">
+            <label id="adminSalonField" hidden>
+              Салон
+              <select id="adminSalonSelect"></select>
+            </label>
+            <label>
+              Email администратора
+              <input id="adminEmailInput" type="email" autocomplete="off" placeholder="admin@example.com" required>
+            </label>
+            <label>
+              Пароль администратора
+              <input id="adminPasswordInput" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required>
+            </label>
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" id="saveAdminBtn">Добавить администратора</button>
+              <button class="secondary-btn" type="button" id="cancelAdminBtn">Отмена</button>
+            </div>
+            <div class="error" id="adminFormError"></div>
+          </form>
+        </div>
+
+        <div class="people-list" id="peopleList"></div>
+        <div class="loading people-loading" id="peopleLoading">Загрузка пользователей…</div>
+        <div class="empty people-empty" id="peopleEmpty" hidden>
+          <h3>Администраторов пока нет</h3>
+          <p>Добавь первого администратора для этого салона.</p>
+        </div>
+      </section>
+
       <section class="panel">
         <div class="panel-head">
           <div>
@@ -147,6 +186,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="admin.js?v=20260818-5"></script>
+  <script src="admin.js?v=20260818-6"></script>
 </body>
 </html>
