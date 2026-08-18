@@ -16,22 +16,26 @@
   }
 
   function updateRoleUI() {
-    if (!roleBadge || typeof currentProfile === 'undefined') return false;
+    if (typeof currentProfile === 'undefined') return false;
 
-    if (!currentProfile?.role) {
-      roleBadge.hidden = true;
+    const role = currentProfile?.role;
+    if (!role) {
+      if (roleBadge) roleBadge.hidden = true;
       if (dashboardNav) dashboardNav.hidden = true;
       return false;
     }
 
-    roleBadge.textContent = roleNames[currentProfile.role] || currentProfile.role;
-    roleBadge.hidden = false;
+    if (roleBadge) {
+      roleBadge.textContent = roleNames[role] || role;
+      roleBadge.hidden = false;
+    }
 
+    // Показываем только те разделы, которыми реально обладает роль.
     const visibleTargets = {
       super_admin: ['salonManagement', 'peopleManagement', 'appointmentsPanel'],
       salon_owner: ['peopleManagement', 'appointmentsPanel'],
       salon_admin: []
-    }[currentProfile.role] || [];
+    }[role] || [];
 
     navButtons.forEach(button => {
       button.hidden = !visibleTargets.includes(button.dataset.target);
@@ -97,8 +101,7 @@
   let attempts = 0;
   const timer = window.setInterval(() => {
     attempts += 1;
-    const ready = updateRoleUI();
-    if (ready) {
+    if (updateRoleUI()) {
       updateActiveSectionByScroll();
       window.clearInterval(timer);
     } else if (attempts >= 100) {
