@@ -24,6 +24,8 @@ const addSalonBtn = document.getElementById('addSalonBtn');
 const salonFormWrap = document.getElementById('salonFormWrap');
 const salonForm = document.getElementById('salonForm');
 const salonName = document.getElementById('salonName');
+const ownerEmail = document.getElementById('ownerEmail');
+const ownerPassword = document.getElementById('ownerPassword');
 const saveSalonBtn = document.getElementById('saveSalonBtn');
 const cancelSalonBtn = document.getElementById('cancelSalonBtn');
 const salonFormError = document.getElementById('salonFormError');
@@ -107,6 +109,8 @@ function openSalonForm() {
   salonFormWrap.hidden = false;
   salonFormError.textContent = '';
   salonName.value = '';
+  ownerEmail.value = '';
+  ownerPassword.value = '';
   salonName.focus();
 }
 
@@ -121,39 +125,59 @@ async function createSalon(event) {
   salonFormError.textContent = '';
 
   const name = salonName.value.trim();
-  if (!name) return;
+  const email = ownerEmail.value.trim();
+  const password = ownerPassword.value;
+
+  if (!name || !email || !password) return;
+
+  if (password.length < 6) {
+    salonFormError.textContent = 'Пароль владельца должен содержать минимум 6 символов.';
+    return;
+  }
 
   saveSalonBtn.disabled = true;
   saveSalonBtn.textContent = 'Создаём…';
 
   try {
-    const { data, error } = await supabaseClient
-      .from('salons')
-      .insert({ name })
-      .select('id,name,created_at')
-      .single();
-
-    if (error) throw error;
-
-    salons.push(data);
-    salons.sort((a, b) => String(a.name).localeCompare(String(b.name), 'ru'));
-    salonFilter.innerHTML = '<option value="all">Все салоны</option>';
-    salons.forEach(salon => {
-      const option = document.createElement('option');
-      option.value = salon.id;
-      option.textContent = salon.name;
-      salonFilter.appendChild(option);
+    const { data, error } = await supabaseClient.functions.invoke('create-salon-owner', {
+      body: {
+        salonName: name,
+        ownerEmail: email,
+        ownerPassword: password
+      }
     });
 
-    renderSalonList();
-    salonEmpty.hidden = true;
+    if (error) {
+      let message = error.message || 'Не удалось создать салон и владельца.';
+
+      try {
+        if (error.context) {
+          const details = await error.context.json();
+          if (details?.error) message = details.error;
+        }
+      } catch (_) {
+        // Оставляем исходное сообщение ошибки.
+      }
+
+      throw new Error(message);
+    }
+
+    if (!data?.success || !data?.salon) {
+      throw new Error(data?.error || 'Сервер не подтвердил создание салона.');
+    }
+
+    await loadSalons();
     closeSalonForm();
+
+    salonFilter.value = data.salon.id;
+    updateStats();
+    renderAppointments();
   } catch (error) {
     console.error(error);
     salonFormError.textContent = `Не удалось создать салон: ${error.message}`;
   } finally {
     saveSalonBtn.disabled = false;
-    saveSalonBtn.textContent = 'Создать салон';
+    saveSalonBtn.textContent = 'Создать салон и владельца';
   }
 }
 
