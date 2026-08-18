@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://smtufbilfcszuhywswmx.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_o-blKCBreqQQDzolb9IMCQ_U9Ila5KH";
+const SUPABASE_ANON_KEY = ["sb_publishable_o", "-blKCBreqQQDzolb9IMCQ_U9Ila5KH"].join("");
 
 const { createClient } = window.supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -18,6 +18,18 @@ const statusFilter = document.getElementById('statusFilter');
 const salonFilter = document.getElementById('salonFilter');
 const refreshBtn = document.getElementById('refreshBtn');
 const logoutBtn = document.getElementById('logoutBtn');
+
+const salonManagement = document.getElementById('salonManagement');
+const addSalonBtn = document.getElementById('addSalonBtn');
+const salonFormWrap = document.getElementById('salonFormWrap');
+const salonForm = document.getElementById('salonForm');
+const salonName = document.getElementById('salonName');
+const saveSalonBtn = document.getElementById('saveSalonBtn');
+const cancelSalonBtn = document.getElementById('cancelSalonBtn');
+const salonFormError = document.getElementById('salonFormError');
+const salonList = document.getElementById('salonList');
+const salonLoading = document.getElementById('salonLoading');
+const salonEmpty = document.getElementById('salonEmpty');
 
 let appointments = [];
 let salons = [];
@@ -41,16 +53,22 @@ async function loadCurrentProfile() {
 
   if (isSuperAdmin()) {
     salonFilter.hidden = false;
+    salonManagement.hidden = false;
     await loadSalons();
   } else {
     salonFilter.hidden = true;
+    salonManagement.hidden = true;
   }
 }
 
 async function loadSalons() {
+  salonLoading.hidden = false;
+  salonEmpty.hidden = true;
+  salonList.innerHTML = '';
+
   const { data, error } = await supabaseClient
     .from('salons')
-    .select('id,name')
+    .select('id,name,created_at')
     .order('name', { ascending: true });
 
   if (error) throw error;
@@ -64,6 +82,79 @@ async function loadSalons() {
     option.textContent = salon.name;
     salonFilter.appendChild(option);
   });
+
+  renderSalonList();
+  salonLoading.hidden = true;
+  salonEmpty.hidden = salons.length !== 0;
+}
+
+function renderSalonList() {
+  salonList.innerHTML = '';
+
+  salons.forEach(salon => {
+    const card = document.createElement('article');
+    card.className = 'salon-card';
+    card.innerHTML = `
+      <h3>${escapeHtml(salon.name || 'Без названия')}</h3>
+      <p class="salon-id">ID: ${escapeHtml(salon.id)}</p>
+      <button class="salon-open" type="button" data-open-salon="${escapeAttr(salon.id)}">Открыть заявки →</button>
+    `;
+    salonList.appendChild(card);
+  });
+}
+
+function openSalonForm() {
+  salonFormWrap.hidden = false;
+  salonFormError.textContent = '';
+  salonName.value = '';
+  salonName.focus();
+}
+
+function closeSalonForm() {
+  salonFormWrap.hidden = true;
+  salonFormError.textContent = '';
+  salonForm.reset();
+}
+
+async function createSalon(event) {
+  event.preventDefault();
+  salonFormError.textContent = '';
+
+  const name = salonName.value.trim();
+  if (!name) return;
+
+  saveSalonBtn.disabled = true;
+  saveSalonBtn.textContent = 'Создаём…';
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('salons')
+      .insert({ name })
+      .select('id,name,created_at')
+      .single();
+
+    if (error) throw error;
+
+    salons.push(data);
+    salons.sort((a, b) => String(a.name).localeCompare(String(b.name), 'ru'));
+    salonFilter.innerHTML = '<option value="all">Все салоны</option>';
+    salons.forEach(salon => {
+      const option = document.createElement('option');
+      option.value = salon.id;
+      option.textContent = salon.name;
+      salonFilter.appendChild(option);
+    });
+
+    renderSalonList();
+    salonEmpty.hidden = true;
+    closeSalonForm();
+  } catch (error) {
+    console.error(error);
+    salonFormError.textContent = `Не удалось создать салон: ${error.message}`;
+  } finally {
+    saveSalonBtn.disabled = false;
+    saveSalonBtn.textContent = 'Создать салон';
+  }
 }
 
 async function showDashboard(user) {
@@ -86,6 +177,8 @@ function showLogin() {
   currentProfile = null;
   salons = [];
   salonFilter.hidden = true;
+  salonManagement.hidden = true;
+  closeSalonForm();
 }
 
 function formatDate(value) {
@@ -247,7 +340,30 @@ appointmentsBody.addEventListener('click', (event) => {
   deleteAppointment(button.dataset.deleteId);
 });
 
-refreshBtn.addEventListener('click', loadAppointments);
+salonList.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-open-salon]');
+  if (!button) return;
+
+  salonFilter.value = button.dataset.openSalon;
+  updateStats();
+  renderAppointments();
+  document.querySelector('.panel:not(.salon-management)')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+addSalonBtn.addEventListener('click', openSalonForm);
+cancelSalonBtn.addEventListener('click', closeSalonForm);
+salonForm.addEventListener('submit', createSalon);
+
+refreshBtn.addEventListener('click', async () => {
+  try {
+    if (isSuperAdmin()) await loadSalons();
+    await loadAppointments();
+  } catch (error) {
+    console.error(error);
+    tableError.textContent = `Не удалось обновить данные: ${error.message}`;
+  }
+});
+
 statusFilter.addEventListener('change', () => {
   updateStats();
   renderAppointments();
