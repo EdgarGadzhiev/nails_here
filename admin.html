@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Админ-панель — Ногти тут</title>
-  <link rel="stylesheet" href="admin.css?v=20260818-4">
+  <link rel="stylesheet" href="admin.css?v=20260818-5">
 </head>
 <body>
   <main class="admin-shell">
@@ -72,8 +72,16 @@
               Название салона
               <input id="salonName" type="text" maxlength="120" placeholder="Например, Queen Nails" required>
             </label>
+            <label>
+              Email владельца
+              <input id="ownerEmail" type="email" autocomplete="off" placeholder="owner@example.com" required>
+            </label>
+            <label>
+              Пароль владельца
+              <input id="ownerPassword" type="password" autocomplete="new-password" minlength="6" placeholder="Минимум 6 символов" required>
+            </label>
             <div class="form-actions">
-              <button class="primary-btn" type="submit" id="saveSalonBtn">Создать салон</button>
+              <button class="primary-btn" type="submit" id="saveSalonBtn">Создать салон и владельца</button>
               <button class="secondary-btn" type="button" id="cancelSalonBtn">Отмена</button>
             </div>
             <div class="error" id="salonFormError"></div>
@@ -139,6 +147,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="admin.js?v=20260818-4"></script>
+  <script src="admin.js?v=20260818-5"></script>
 </body>
 </html>
