@@ -88,16 +88,12 @@
             <select id="statusFilter"><option value="all">Все статусы</option><option value="new">Новые</option><option value="confirmed">Подтверждённые</option><option value="done">Завершённые</option><option value="cancelled">Отменённые</option></select>
           </div>
         </div>
-
         <section class="stats-grid appointments-stats">
           <article class="stat-card"><span>Всего заявок</span><strong id="totalCount">0</strong></article>
           <article class="stat-card"><span>Новые</span><strong id="newCount">0</strong></article>
           <article class="stat-card"><span>На сегодня</span><strong id="todayCount">0</strong></article>
         </section>
-
-        <div class="table-wrap">
-          <table><thead><tr><th>Клиент</th><th>Телефон</th><th>Услуги</th><th>Мастер</th><th>Дата</th><th>Время</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="appointmentsBody"></tbody></table>
-        </div>
+        <div class="table-wrap"><table><thead><tr><th>Клиент</th><th>Телефон</th><th>Услуги</th><th>Мастер</th><th>Дата</th><th>Время</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="appointmentsBody"></tbody></table></div>
         <div class="empty" id="emptyState" hidden><div class="empty-icon">♡</div><h3>Заявок пока нет</h3><p>Когда клиент заполнит форму на сайте, заявка появится здесь.</p></div>
         <div class="loading" id="loadingState">Загрузка заявок…</div>
         <div class="error table-error" id="tableError"></div>
@@ -105,7 +101,7 @@
     </section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="admin.js?v=20260818-6"></script>
-  <script src="admin-ui.js?v=20260818-2"></script>
+  <script src="admin.js?v=20260818-7"></script>
+  <script src="admin-ui.js?v=20260818-3"></script>
 </body>
 </html>
