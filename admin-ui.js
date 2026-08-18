@@ -8,8 +8,6 @@
   const roleBadge = document.getElementById('adminRole');
   const dashboardNav = document.getElementById('dashboardNav');
   const navButtons = dashboardNav?.querySelectorAll('[data-target]') || [];
-  let clickedSection = null;
-  let clickLockTimer = null;
 
   function setActiveSection(id) {
     navButtons.forEach(button => {
@@ -36,31 +34,29 @@
     return true;
   }
 
+  // При клике сразу фиксируем выбранный раздел.
+  // Скролл ниже уже сам определяет, когда переключить подсветку.
   navButtons.forEach(button => {
     button.addEventListener('click', () => {
       const target = document.getElementById(button.dataset.target);
       if (!target || target.hidden) return;
 
-      // Сразу подсвечиваем выбранный раздел.
-      clickedSection = target.id;
-      setActiveSection(clickedSection);
+      setActiveSection(target.id);
 
-      // Не даём scroll listener'у перезаписать подсветку во время smooth scroll.
-      window.clearTimeout(clickLockTimer);
-      clickLockTimer = window.setTimeout(() => {
-        clickedSection = null;
-        updateActiveSection();
-      }, 900);
+      const navHeight = dashboardNav.getBoundingClientRect().height;
+      const targetTop = window.scrollY + target.getBoundingClientRect().top - navHeight - 12;
 
-      target.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: 'smooth'
       });
     });
   });
 
-  function updateActiveSection() {
-    if (!dashboardNav || dashboardNav.hidden || clickedSection) return;
+  // При ручном скролле переключаем пункт только после прохождения
+  // верхней границей секции контрольной линии под навигацией.
+  function updateActiveSectionByScroll() {
+    if (!dashboardNav || dashboardNav.hidden) return;
 
     const sections = [...navButtons]
       .map(button => document.getElementById(button.dataset.target))
@@ -72,7 +68,7 @@
     let activeId = sections[0].id;
 
     for (const section of sections) {
-      if (section.getBoundingClientRect().top <= navBottom + 8) {
+      if (section.getBoundingClientRect().top <= navBottom + 16) {
         activeId = section.id;
       }
     }
@@ -80,15 +76,15 @@
     setActiveSection(activeId);
   }
 
-  window.addEventListener('scroll', updateActiveSection, { passive: true });
-  window.addEventListener('resize', updateActiveSection);
+  window.addEventListener('scroll', updateActiveSectionByScroll, { passive: true });
+  window.addEventListener('resize', updateActiveSectionByScroll);
 
   let attempts = 0;
   const timer = window.setInterval(() => {
     attempts += 1;
     const ready = updateRoleBadge();
     if (ready) {
-      updateActiveSection();
+      updateActiveSectionByScroll();
       window.clearInterval(timer);
     } else if (attempts >= 100) {
       window.clearInterval(timer);
