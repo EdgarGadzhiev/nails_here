@@ -33,8 +33,26 @@ const salonList = document.getElementById('salonList');
 const salonLoading = document.getElementById('salonLoading');
 const salonEmpty = document.getElementById('salonEmpty');
 
+const peopleManagement = document.getElementById('peopleManagement');
+const peopleTitle = document.getElementById('peopleTitle');
+const peopleSubtitle = document.getElementById('peopleSubtitle');
+const peopleList = document.getElementById('peopleList');
+const peopleLoading = document.getElementById('peopleLoading');
+const peopleEmpty = document.getElementById('peopleEmpty');
+const addAdminBtn = document.getElementById('addAdminBtn');
+const adminFormWrap = document.getElementById('adminFormWrap');
+const adminForm = document.getElementById('adminForm');
+const adminSalonField = document.getElementById('adminSalonField');
+const adminSalonSelect = document.getElementById('adminSalonSelect');
+const adminEmailInput = document.getElementById('adminEmailInput');
+const adminPasswordInput = document.getElementById('adminPasswordInput');
+const saveAdminBtn = document.getElementById('saveAdminBtn');
+const cancelAdminBtn = document.getElementById('cancelAdminBtn');
+const adminFormError = document.getElementById('adminFormError');
+
 let appointments = [];
 let salons = [];
+let manageableUsers = [];
 let currentProfile = null;
 
 const statusNames = {
@@ -48,6 +66,14 @@ function isSuperAdmin() {
   return currentProfile?.role === 'super_admin';
 }
 
+function isSalonOwner() {
+  return currentProfile?.role === 'salon_owner';
+}
+
+function getSalonName(salonId) {
+  return salons.find(salon => salon.id === salonId)?.name || 'Неизвестный салон';
+}
+
 async function loadCurrentProfile() {
   const { data, error } = await supabaseClient.rpc('get_my_profile');
   if (error) throw error;
@@ -56,10 +82,30 @@ async function loadCurrentProfile() {
   if (isSuperAdmin()) {
     salonFilter.hidden = false;
     salonManagement.hidden = false;
+    peopleManagement.hidden = false;
+    addAdminBtn.hidden = false;
+    adminSalonField.hidden = false;
+    peopleTitle.textContent = 'Управление владельцами и администраторами';
+    peopleSubtitle.textContent = 'Ты управляешь пользователями всех салонов.';
     await loadSalons();
+  } else if (isSalonOwner()) {
+    salonFilter.hidden = true;
+    salonManagement.hidden = true;
+    peopleManagement.hidden = false;
+    addAdminBtn.hidden = false;
+    adminSalonField.hidden = true;
+    peopleTitle.textContent = 'Мои администраторы';
+    peopleSubtitle.textContent = 'Можно добавлять и удалять администраторов своего салона.';
   } else {
     salonFilter.hidden = true;
     salonManagement.hidden = true;
+    peopleManagement.hidden = true;
+  }
+
+  if (isSuperAdmin()) {
+    await loadManageableUsers();
+  } else if (isSalonOwner()) {
+    await loadManageableUsers();
   }
 }
 
@@ -77,12 +123,18 @@ async function loadSalons() {
 
   salons = data || [];
   salonFilter.innerHTML = '<option value="all">Все салоны</option>';
+  adminSalonSelect.innerHTML = '';
 
   salons.forEach(salon => {
     const option = document.createElement('option');
     option.value = salon.id;
     option.textContent = salon.name;
     salonFilter.appendChild(option);
+
+    const adminOption = document.createElement('option');
+    adminOption.value = salon.id;
+    adminOption.textContent = salon.name;
+    adminSalonSelect.appendChild(adminOption);
   });
 
   renderSalonList();
@@ -103,6 +155,299 @@ function renderSalonList() {
     `;
     salonList.appendChild(card);
   });
+}
+
+async function loadManageableUsers() {
+  peopleLoading.hidden = false;
+  peopleEmpty.hidden = true;
+  peopleList.innerHTML = '';
+  adminFormError.textContent = '';
+
+  const { data, error } = await supabaseClient.rpc('get_manageable_users');
+  if (error) throw error;
+
+  manageableUsers = data || [];
+  renderPeopleList();
+  peopleLoading.hidden = true;
+
+  const hasUsers = manageableUsers.length > 0;
+  peopleEmpty.hidden = hasUsers;
+}
+
+function renderPeopleList() {
+  peopleList.innerHTML = '';
+
+  if (isSuperAdmin()) {
+    const grouped = salons.map(salon => ({
+      salon,
+      users: manageableUsers.filter(user => user.salon_id === salon.id)
+    }));
+
+    grouped.forEach(group => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'people-group';
+
+      const owner = group.users.find(user => user.role === 'salon_owner');
+      const admins = group.users.filter(user => user.role === 'salon_admin');
+
+      wrapper.innerHTML = `
+        <div class="people-group-head">
+          <div>
+            <h3>${escapeHtml(group.salon.name)}</h3>
+            <p class="muted">${owner ? 'Владелец назначен' : 'Владелец не назначен'}</p>
+          </div>
+          <div class="people-group-actions">
+            ${owner ? '' : `<button class="secondary-btn compact-btn" type="button" data-assign-owner="${escapeAttr(group.salon.id)}">+ Назначить owner</button>`}
+            <button class="secondary-btn compact-btn" type="button" data-add-admin-for-salon="${escapeAttr(group.salon.id)}">+ Admin</button>
+          </div>
+        </div>
+        <div class="person-row owner-row">
+          <div>
+            <span class="person-role">OWNER</span>
+            <strong>${escapeHtml(owner?.email || 'Не назначен')}</strong>
+          </div>
+          ${owner ? `<button class="delete-btn" type="button" data-delete-owner="${escapeAttr(owner.id)}" title="Удалить owner">🗑</button>` : ''}
+        </div>
+        ${admins.map(admin => `
+          <div class="person-row">
+            <div>
+              <span class="person-role">ADMIN</span>
+              <strong>${escapeHtml(admin.email || admin.id)}</strong>
+            </div>
+            <button class="delete-btn" type="button" data-delete-admin="${escapeAttr(admin.id)}" title="Удалить администратора">🗑</button>
+          </div>
+        `).join('')}
+        ${admins.length === 0 ? '<div class="person-empty">Администраторов пока нет.</div>' : ''}
+      `;
+
+      peopleList.appendChild(wrapper);
+    });
+
+    if (salons.length === 0) {
+      peopleEmpty.hidden = false;
+      peopleEmpty.querySelector('h3').textContent = 'Салонов пока нет';
+      peopleEmpty.querySelector('p').textContent = 'Сначала создай салон.';
+    }
+    return;
+  }
+
+  manageableUsers.forEach(user => {
+    const row = document.createElement('div');
+    row.className = 'person-row';
+    row.innerHTML = `
+      <div>
+        <span class="person-role">ADMIN</span>
+        <strong>${escapeHtml(user.email || user.id)}</strong>
+      </div>
+      <button class="delete-btn" type="button" data-delete-admin="${escapeAttr(user.id)}" title="Удалить администратора">🗑</button>
+    `;
+    peopleList.appendChild(row);
+  });
+}
+
+function openAdminForm(salonId = '') {
+  adminFormWrap.hidden = false;
+  adminFormError.textContent = '';
+  adminEmailInput.value = '';
+  adminPasswordInput.value = '';
+
+  if (isSuperAdmin()) {
+    adminSalonField.hidden = false;
+    if (salonId) adminSalonSelect.value = salonId;
+  } else {
+    adminSalonField.hidden = true;
+  }
+
+  adminEmailInput.focus();
+}
+
+function closeAdminForm() {
+  adminFormWrap.hidden = true;
+  adminFormError.textContent = '';
+  adminForm.reset();
+}
+
+async function createAdmin(event) {
+  event.preventDefault();
+  adminFormError.textContent = '';
+
+  const email = adminEmailInput.value.trim().toLowerCase();
+  const password = adminPasswordInput.value;
+  const salonId = isSuperAdmin() ? adminSalonSelect.value : currentProfile?.salon_id;
+
+  if (!email || !password || !salonId) return;
+
+  if (password.length < 6) {
+    adminFormError.textContent = 'Пароль администратора должен содержать минимум 6 символов.';
+    return;
+  }
+
+  saveAdminBtn.disabled = true;
+  saveAdminBtn.textContent = 'Создаём…';
+
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('create-salon-admin', {
+      body: {
+        email,
+        password,
+        salonId
+      }
+    });
+
+    if (error) {
+      let message = error.message || 'Не удалось создать администратора.';
+      try {
+        if (error.context) {
+          const details = await error.context.json();
+          if (details?.error) message = details.error;
+        }
+      } catch (_) {}
+      throw new Error(message);
+    }
+
+    if (!data?.success) {
+      throw new Error(data?.error || 'Сервер не подтвердил создание администратора.');
+    }
+
+    closeAdminForm();
+    await loadManageableUsers();
+  } catch (error) {
+    console.error(error);
+    adminFormError.textContent = `Не удалось создать администратора: ${error.message}`;
+  } finally {
+    saveAdminBtn.disabled = false;
+    saveAdminBtn.textContent = 'Добавить администратора';
+  }
+}
+
+async function deleteAdmin(id) {
+  const user = manageableUsers.find(item => item.id === id);
+  const email = user?.email || 'этого администратора';
+
+  if (!window.confirm(`Удалить администратора «${email}»?\n\nАккаунт будет удалён полностью. Это действие нельзя отменить.`)) return;
+
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('delete-salon-admin', {
+      body: { adminId: id }
+    });
+
+    if (error) {
+      let message = error.message || 'Не удалось удалить администратора.';
+      try {
+        if (error.context) {
+          const details = await error.context.json();
+          if (details?.error) message = details.error;
+        }
+      } catch (_) {}
+      throw new Error(message);
+    }
+
+    if (!data?.success) throw new Error(data?.error || 'Сервер не подтвердил удаление.');
+    await loadManageableUsers();
+  } catch (error) {
+    console.error(error);
+    adminFormError.textContent = `Не удалось удалить администратора: ${error.message}`;
+  }
+}
+
+async function deleteOwner(id) {
+  const user = manageableUsers.find(item => item.id === id);
+  const email = user?.email || 'этого владельца';
+
+  if (!window.confirm(`Удалить владельца «${email}»?\n\nСалон и его администраторы останутся. Это действие нельзя отменить.`)) return;
+
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('delete-salon-owner', {
+      body: { ownerId: id }
+    });
+
+    if (error) {
+      let message = error.message || 'Не удалось удалить владельца.';
+      try {
+        if (error.context) {
+          const details = await error.context.json();
+          if (details?.error) message = details.error;
+        }
+      } catch (_) {}
+      throw new Error(message);
+    }
+
+    if (!data?.success) throw new Error(data?.error || 'Сервер не подтвердил удаление владельца.');
+    await loadManageableUsers();
+  } catch (error) {
+    console.error(error);
+    adminFormError.textContent = `Не удалось удалить владельца: ${error.message}`;
+  }
+}
+
+function openOwnerForm(salonId) {
+  openAdminForm();
+  adminFormWrap.hidden = false;
+  adminFormError.textContent = '';
+  adminForm.dataset.mode = 'owner';
+  adminForm.dataset.salonId = salonId;
+  adminSalonField.hidden = false;
+  adminSalonSelect.value = salonId;
+  adminEmailInput.placeholder = 'owner@example.com';
+  adminPasswordInput.placeholder = 'Минимум 6 символов';
+  saveAdminBtn.textContent = 'Назначить owner';
+}
+
+function resetAdminFormMode() {
+  adminForm.dataset.mode = 'admin';
+  saveAdminBtn.textContent = 'Добавить администратора';
+  adminEmailInput.placeholder = 'admin@example.com';
+}
+
+async function assignOwner(event) {
+  event.preventDefault();
+  adminFormError.textContent = '';
+
+  const salonId = adminForm.dataset.salonId || adminSalonSelect.value;
+  const email = adminEmailInput.value.trim().toLowerCase();
+  const password = adminPasswordInput.value;
+
+  if (!salonId || !email || !password) return;
+
+  if (password.length < 6) {
+    adminFormError.textContent = 'Пароль владельца должен содержать минимум 6 символов.';
+    return;
+  }
+
+  saveAdminBtn.disabled = true;
+  saveAdminBtn.textContent = 'Назначаем…';
+
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('assign-salon-owner', {
+      body: {
+        salonId,
+        ownerEmail: email,
+        ownerPassword: password
+      }
+    });
+
+    if (error) {
+      let message = error.message || 'Не удалось назначить владельца.';
+      try {
+        if (error.context) {
+          const details = await error.context.json();
+          if (details?.error) message = details.error;
+        }
+      } catch (_) {}
+      throw new Error(message);
+    }
+
+    if (!data?.success) throw new Error(data?.error || 'Сервер не подтвердил назначение владельца.');
+    closeAdminForm();
+    resetAdminFormMode();
+    await loadManageableUsers();
+  } catch (error) {
+    console.error(error);
+    adminFormError.textContent = `Не удалось назначить владельца: ${error.message}`;
+  } finally {
+    saveAdminBtn.disabled = false;
+    saveAdminBtn.textContent = 'Добавить администратора';
+  }
 }
 
 function openSalonForm() {
@@ -149,24 +494,19 @@ async function createSalon(event) {
 
     if (error) {
       let message = error.message || 'Не удалось создать салон и владельца.';
-
       try {
         if (error.context) {
           const details = await error.context.json();
           if (details?.error) message = details.error;
         }
-      } catch (_) {
-        // Оставляем исходное сообщение ошибки.
-      }
-
+      } catch (_) {}
       throw new Error(message);
     }
 
-    if (!data?.success || !data?.salon) {
-      throw new Error(data?.error || 'Сервер не подтвердил создание салона.');
-    }
+    if (!data?.success || !data?.salon) throw new Error(data?.error || 'Сервер не подтвердил создание салона.');
 
     await loadSalons();
+    await loadManageableUsers();
     closeSalonForm();
 
     salonFilter.value = data.salon.id;
@@ -191,7 +531,7 @@ async function showDashboard(user) {
     await loadAppointments();
   } catch (error) {
     console.error(error);
-    tableError.textContent = `Не удалось загрузить профиль или салоны: ${error.message}`;
+    tableError.textContent = `Не удалось загрузить профиль или пользователей: ${error.message}`;
   }
 }
 
@@ -200,9 +540,13 @@ function showLogin() {
   dashboard.hidden = true;
   currentProfile = null;
   salons = [];
+  manageableUsers = [];
   salonFilter.hidden = true;
   salonManagement.hidden = true;
+  peopleManagement.hidden = true;
   closeSalonForm();
+  closeAdminForm();
+  resetAdminFormMode();
 }
 
 function formatDate(value) {
@@ -364,6 +708,31 @@ appointmentsBody.addEventListener('click', (event) => {
   deleteAppointment(button.dataset.deleteId);
 });
 
+peopleList.addEventListener('click', (event) => {
+  const deleteAdminButton = event.target.closest('[data-delete-admin]');
+  if (deleteAdminButton) {
+    deleteAdmin(deleteAdminButton.dataset.deleteAdmin);
+    return;
+  }
+
+  const deleteOwnerButton = event.target.closest('[data-delete-owner]');
+  if (deleteOwnerButton) {
+    deleteOwner(deleteOwnerButton.dataset.deleteOwner);
+    return;
+  }
+
+  const assignOwnerButton = event.target.closest('[data-assign-owner]');
+  if (assignOwnerButton) {
+    openOwnerForm(assignOwnerButton.dataset.assignOwner);
+    return;
+  }
+
+  const addAdminForSalonButton = event.target.closest('[data-add-admin-for-salon]');
+  if (addAdminForSalonButton) {
+    openAdminForm(addAdminForSalonButton.dataset.addAdminForSalon);
+  }
+});
+
 salonList.addEventListener('click', (event) => {
   const button = event.target.closest('[data-open-salon]');
   if (!button) return;
@@ -371,16 +740,30 @@ salonList.addEventListener('click', (event) => {
   salonFilter.value = button.dataset.openSalon;
   updateStats();
   renderAppointments();
-  document.querySelector('.panel:not(.salon-management)')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelector('.panel:not(.salon-management):not(.people-management)')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 addSalonBtn.addEventListener('click', openSalonForm);
 cancelSalonBtn.addEventListener('click', closeSalonForm);
 salonForm.addEventListener('submit', createSalon);
 
+addAdminBtn.addEventListener('click', () => {
+  resetAdminFormMode();
+  openAdminForm();
+});
+cancelAdminBtn.addEventListener('click', () => {
+  closeAdminForm();
+  resetAdminFormMode();
+});
+adminForm.addEventListener('submit', event => {
+  if (adminForm.dataset.mode === 'owner') assignOwner(event);
+  else createAdmin(event);
+});
+
 refreshBtn.addEventListener('click', async () => {
   try {
     if (isSuperAdmin()) await loadSalons();
+    if (isSuperAdmin() || isSalonOwner()) await loadManageableUsers();
     await loadAppointments();
   } catch (error) {
     console.error(error);
