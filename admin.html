@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Админ-панель — Ногти тут</title>
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=20260818-4">
 </head>
 <body>
   <main class="admin-shell">
@@ -55,6 +55,37 @@
           <span>На сегодня</span>
           <strong id="todayCount">0</strong>
         </article>
+      </section>
+
+      <section class="panel salon-management" id="salonManagement" hidden>
+        <div class="panel-head">
+          <div>
+            <h2>Управление салонами</h2>
+            <p class="muted">Только супер-администратор может управлять списком салонов.</p>
+          </div>
+          <button class="primary-btn compact-btn" id="addSalonBtn" type="button">+ Добавить салон</button>
+        </div>
+
+        <div class="salon-form" id="salonFormWrap" hidden>
+          <form id="salonForm">
+            <label>
+              Название салона
+              <input id="salonName" type="text" maxlength="120" placeholder="Например, Queen Nails" required>
+            </label>
+            <div class="form-actions">
+              <button class="primary-btn" type="submit" id="saveSalonBtn">Создать салон</button>
+              <button class="secondary-btn" type="button" id="cancelSalonBtn">Отмена</button>
+            </div>
+            <div class="error" id="salonFormError"></div>
+          </form>
+        </div>
+
+        <div class="salon-list" id="salonList"></div>
+        <div class="loading salon-loading" id="salonLoading">Загрузка салонов…</div>
+        <div class="empty salon-empty" id="salonEmpty" hidden>
+          <h3>Салонов пока нет</h3>
+          <p>Добавь первый салон, чтобы он появился в системе.</p>
+        </div>
       </section>
 
       <section class="panel">
@@ -108,6 +139,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="admin.js?v=20260818-3"></script>
+  <script src="admin.js?v=20260818-4"></script>
 </body>
 </html>
