@@ -16,5 +16,19 @@
 /* Make service cards match the rounded interface language used throughout the site. */
 .service-card{border-radius:22px!important}
 
+/* Reviews: remove the fixed dark corner shadows/overlays. */
+#reviews,
+#reviews::before,
+#reviews::after,
+#reviews .reviews-viewport,
+#reviews .reviews-viewport::before,
+#reviews .reviews-viewport::after,
+#reviews .reviews-track,
+#reviews .reviews-track::before,
+#reviews .reviews-track::after,
+#reviews .review-card,
+#reviews .review-card::before,
+#reviews .review-card::after{box-shadow:none!important;filter:none!important}
+
 @media(max-width:900px){#gallery .gallery-grid{grid-template-columns:1fr 1fr!important}#gallery .gallery-item{min-height:200px!important}}
 @media(max-width:640px){#gallery .gallery-grid{grid-template-columns:1fr 1fr!important;grid-auto-rows:180px!important}#gallery .gallery-item{min-height:180px!important}}
