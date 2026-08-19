@@ -5,15 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ногти тут — студия маникюра, Тюмень (демо-сайт)</title>
-
-  <!-- ===== ИКОНКА ВКЛАДКИ (FAVICON) ===== -->
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <meta name="description" content="Демо-сайт с онлайн-записью для студии «Ногти тут» (Тюмень). Прототип для предложения услуг веб-разработки.">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -21,215 +18,81 @@
   <style>
     .contacts-info .contact-item { align-items:flex-start; }
     .contacts-info .contact-copy { display:flex; flex-direction:column; gap:7px; }
-    .contacts-info .contact-label { color:var(--ink); font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
+    .contacts-info .contact-label { color:#fff; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; }
     .contacts-info .phone-list { display:flex; flex-direction:column; gap:5px; }
-    .contacts-info .phone-list a { display:block; }
-    .contacts-info .btn-primary { display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; width:max-content; min-width:190px; text-align:center; }
+    .contacts-info .phone-list a { display:block; color:#f8eee5; }
+    .contacts-info .btn-primary { display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; width:max-content; min-width:210px; text-align:center; background:#c28e5d !important; color:#fff !important; visibility:visible !important; opacity:1 !important; }
   </style>
 </head>
 <body>
-
-<!-- ===== ШАПКА ===== -->
 <header>
-  <div class="logo">
-    <div class="logo-mark"><i class="fas fa-spa"></i></div>
-    <div class="logo-text">НОГТИ <span>ТУТ</span></div>
-  </div>
-  <nav id="navbar">
-    <a href="#services">Услуги</a>
-    <a href="#masters">Мастера</a>
-    <a href="#gallery">Работы</a>
-    <a href="#contacts">Контакты</a>
-    <a href="#booking" class="nav-cta">Записаться</a>
-  </nav>
-  <button class="burger" id="burgerBtn" aria-label="Меню">
-    <i class="fas fa-bars"></i>
-  </button>
+  <div class="logo"><div class="logo-mark"><i class="fas fa-spa"></i></div><div class="logo-text">НОГТИ <span>ТУТ</span></div></div>
+  <nav id="navbar"><a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#gallery">Работы</a><a href="#contacts">Контакты</a><a href="#booking" class="nav-cta">Записаться</a></nav>
+  <button class="burger" id="burgerBtn" aria-label="Меню"><i class="fas fa-bars"></i></button>
 </header>
 
-<!-- ===== HERO ===== -->
 <section class="hero" id="home">
   <div class="hero-content">
     <div class="hero-eyebrow">Студия маникюра в Тюмени</div>
     <h1>Красивые руки <br><span>начинаются здесь</span></h1>
     <p class="hero-sub">Маникюр, педикюр, наращивание. Аккуратные мастера, стерильные инструменты, запись онлайн за 1 минуту.</p>
-    <div class="hero-btns">
-      <a href="#booking" class="btn-primary">Записаться онлайн</a>
-      <a href="#services" class="btn-outline">Смотреть услуги</a>
-    </div>
+    <div class="hero-btns"><a href="#booking" class="btn-primary">Записаться онлайн</a><a href="#services" class="btn-outline">Смотреть услуги</a></div>
   </div>
-
-  <div class="hero-visual" aria-hidden="true">
-    <div class="hero-visual-ring"></div>
-    <div class="hero-visual-badge badge-top">
-      <i class="fas fa-shield-halved"></i>
-      <span>Стерильные<br>инструменты</span>
-    </div>
-    <div class="hero-visual-badge badge-bottom">
-      <i class="fas fa-clock"></i>
-      <span>Запись онлайн<br>за 1 минуту</span>
-    </div>
-  </div>
-
-  <svg class="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,32 C240,80 480,0 720,24 C960,48 1200,88 1440,40 L1440,90 L0,90 Z"></path>
-  </svg>
+  <div class="hero-visual" aria-hidden="true"><div class="hero-visual-ring"></div><div class="hero-visual-badge badge-top"><i class="fas fa-shield-halved"></i><span>Стерильные<br>инструменты</span></div><div class="hero-visual-badge badge-bottom"><i class="fas fa-clock"></i><span>Запись онлайн<br>за 1 минуту</span></div></div>
+  <svg class="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,32 C240,80 480,0 720,24 C960,48 1200,88 1440,40 L1440,90 L0,90 Z"></path></svg>
 </section>
 
-<!-- ===== УСЛУГИ ===== -->
-<section id="services">
-  <div class="container">
-    <div class="section-eyebrow reveal">Прайс</div>
-    <h2 class="section-title reveal">Наши <span>услуги</span></h2>
-    <div class="services-grid">
-      <div class="service-card reveal"><i class="fas fa-hand-sparkles"></i><h3>Классический маникюр</h3><p>Обрезной маникюр с приведением кутикулы в порядок</p><div class="service-price">от 900 ₽</div></div>
-      <div class="service-card reveal"><i class="fas fa-paint-brush"></i><h3>Маникюр + гель-лак</h3><p>Покрытие держится до 3 недель, широкая палитра цветов</p><div class="service-price">от 1 700 ₽</div></div>
-      <div class="service-card reveal"><i class="fas fa-gem"></i><h3>Наращивание гелем</h3><p>Моделирование формы, укрепление, дизайн на выбор</p><div class="service-price">от 2 800 ₽</div></div>
-      <div class="service-card reveal"><i class="fas fa-shoe-prints"></i><h3>Женский педикюр</h3><p>Аппаратная обработка стоп + покрытие</p><div class="service-price">от 2 000 ₽</div></div>
-      <div class="service-card reveal"><i class="fas fa-male"></i><h3>Мужской маникюр</h3><p>Без покрытия, уход за кутикулой и формой ногтя</p><div class="service-price">от 1 100 ₽</div></div>
-      <div class="service-card reveal"><i class="fas fa-magic"></i><h3>Аппаратный маникюр</h3><p>Бережная обработка без размягчения кожи водой</p><div class="service-price">от 1 400 ₽</div></div>
-    </div>
-  </div>
-</section>
+<section id="services"><div class="container"><div class="section-eyebrow reveal">Прайс</div><h2 class="section-title reveal">Наши <span>услуги</span></h2><div class="services-grid">
+<div class="service-card reveal"><i class="fas fa-hand-sparkles"></i><h3>Классический маникюр</h3><p>Обрезной маникюр с приведением кутикулы в порядок</p><div class="service-price">от 900 ₽</div></div>
+<div class="service-card reveal"><i class="fas fa-paint-brush"></i><h3>Маникюр + гель-лак</h3><p>Покрытие держится до 3 недель, широкая палитра цветов</p><div class="service-price">от 1 700 ₽</div></div>
+<div class="service-card reveal"><i class="fas fa-gem"></i><h3>Наращивание гелем</h3><p>Моделирование формы, укрепление, дизайн на выбор</p><div class="service-price">от 2 800 ₽</div></div>
+<div class="service-card reveal"><i class="fas fa-shoe-prints"></i><h3>Женский педикюр</h3><p>Аппаратная обработка стоп + покрытие</p><div class="service-price">от 2 000 ₽</div></div>
+<div class="service-card reveal"><i class="fas fa-male"></i><h3>Мужской маникюр</h3><p>Без покрытия, уход за кутикулой и формой ногтя</p><div class="service-price">от 1 100 ₽</div></div>
+<div class="service-card reveal"><i class="fas fa-magic"></i><h3>Аппаратный маникюр</h3><p>Бережная обработка без размягчения кожи водой</p><div class="service-price">от 1 400 ₽</div></div>
+</div></div></section>
 
-<!-- ===== МАСТЕРА ===== -->
-<section id="masters">
-  <div class="container">
-    <div class="section-eyebrow reveal">Команда</div>
-    <h2 class="section-title reveal">Наши <span>мастера</span></h2>
-    <div class="masters-grid">
-      <div class="master-card reveal"><div class="master-photo"><i class="fas fa-user"></i></div><h3>Алина</h3><div class="master-role">Топ-мастер маникюра</div><p>Стаж 7 лет. Специализация — сложный дизайн и наращивание</p></div>
-      <div class="master-card reveal"><div class="master-photo"><i class="fas fa-user"></i></div><h3>Динара</h3><div class="master-role">Мастер маникюра и педикюра</div><p>Стаж 4 года. Аккуратная работа, аппаратные техники</p></div>
-      <div class="master-card reveal"><div class="master-photo"><i class="fas fa-user"></i></div><h3>Ксения</h3><div class="master-role">Мастер по наращиванию</div><p>Стаж 5 лет. Моделирование сложных форм, French, омбре</p></div>
-    </div>
-  </div>
-</section>
+<section id="masters"><div class="container"><div class="section-eyebrow reveal">Команда</div><h2 class="section-title reveal">Наши <span>мастера</span></h2><div class="masters-grid">
+<div class="master-card reveal"><div class="master-photo"><i class="fas fa-user"></i></div><h3>Алина</h3><div class="master-role">Топ-мастер маникюра</div><p>Стаж 7 лет. Специализация — сложный дизайн и наращивание</p></div>
+<div class="master-card reveal"><div class="master-photo"><i class="fas fa-user"></i></div><h3>Динара</h3><div class="master-role">Мастер маникюра и педикюра</div><p>Стаж 4 года. Аккуратная работа, аппаратные техники</p></div>
+<div class="master-card reveal"><div class="master-photo"><i class="fas fa-user"></i></div><h3>Ксения</h3><div class="master-role">Мастер по наращиванию</div><p>Стаж 5 лет. Моделирование сложных форм, French, омбре</p></div>
+</div></div></section>
 
-<!-- ===== ЗАПИСЬ ===== -->
-<section id="booking">
-  <div class="container">
-    <div class="section-eyebrow reveal">Онлайн-запись</div>
-    <h2 class="section-title reveal">Записаться <span>на приём</span></h2>
-    <div class="booking-widget reveal">
-      <div class="booking-steps">
-        <div class="booking-step active" data-step-indicator="1"><div class="step-circle">1</div><div class="step-label">Услуги</div></div>
-        <div class="booking-step-line"></div>
-        <div class="booking-step" data-step-indicator="2"><div class="step-circle">2</div><div class="step-label">Мастер</div></div>
-        <div class="booking-step-line"></div>
-        <div class="booking-step" data-step-indicator="3"><div class="step-circle">3</div><div class="step-label">Дата/время</div></div>
-        <div class="booking-step-line"></div>
-        <div class="booking-step" data-step-indicator="4"><div class="step-circle">4</div><div class="step-label">Готово</div></div>
-      </div>
+<section id="booking"><div class="container"><div class="section-eyebrow reveal">Онлайн-запись</div><h2 class="section-title reveal">Записаться <span>на приём</span></h2><div class="booking-widget reveal">
+<div class="booking-steps"><div class="booking-step active" data-step-indicator="1"><div class="step-circle">1</div><div class="step-label">Услуги</div></div><div class="booking-step-line"></div><div class="booking-step" data-step-indicator="2"><div class="step-circle">2</div><div class="step-label">Мастер</div></div><div class="booking-step-line"></div><div class="booking-step" data-step-indicator="3"><div class="step-circle">3</div><div class="step-label">Дата/время</div></div><div class="booking-step-line"></div><div class="booking-step" data-step-indicator="4"><div class="step-circle">4</div><div class="step-label">Готово</div></div></div>
+<div class="booking-panel active" data-step="1"><div class="booking-panel-title">Выберите одну или несколько услуг</div><div class="booking-services-list">
+<label class="booking-service-item"><input type="checkbox" name="service" value="Классический маникюр" data-price="900"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Классический маникюр</span><span class="booking-service-price">900 ₽</span></label>
+<label class="booking-service-item"><input type="checkbox" name="service" value="Маникюр + гель-лак" data-price="1700"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Маникюр + гель-лак</span><span class="booking-service-price">1 700 ₽</span></label>
+<label class="booking-service-item"><input type="checkbox" name="service" value="Наращивание гелем" data-price="2800"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Наращивание гелем</span><span class="booking-service-price">2 800 ₽</span></label>
+<label class="booking-service-item"><input type="checkbox" name="service" value="Женский педикюр" data-price="2000"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Женский педикюр</span><span class="booking-service-price">2 000 ₽</span></label>
+<label class="booking-service-item"><input type="checkbox" name="service" value="Мужской маникюр" data-price="1100"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Мужской маникюр</span><span class="booking-service-price">1 100 ₽</span></label>
+<label class="booking-service-item"><input type="checkbox" name="service" value="Аппаратный маникюр" data-price="1400"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Аппаратный маникюр</span><span class="booking-service-price">1 400 ₽</span></label>
+</div></div>
+<div class="booking-panel" data-step="2"><div class="booking-panel-title">Выберите мастера</div><div class="booking-masters-list"><label class="booking-master-item"><input type="radio" name="master" value="Алина"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">Алина</span><span class="booking-master-role">Топ-мастер</span></label><label class="booking-master-item"><input type="radio" name="master" value="Динара"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">Динара</span><span class="booking-master-role">Маникюр и педикюр</span></label><label class="booking-master-item"><input type="radio" name="master" value="Ксения"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">Ксения</span><span class="booking-master-role">Наращивание</span></label><label class="booking-master-item"><input type="radio" name="master" value="Любой свободный"><span class="master-radio-photo"><i class="fas fa-users"></i></span><span class="booking-master-name">Не важно</span><span class="booking-master-role">Любой свободный мастер</span></label></div></div>
+<div class="booking-panel" data-step="3"><div class="booking-panel-title">Выберите дату</div><div class="booking-dates-list" id="bookingDates"></div><div class="booking-panel-title booking-panel-title-time">Выберите время</div><div class="booking-times-list" id="bookingTimes"><div class="booking-times-placeholder">Сначала выберите дату</div></div></div>
+<div class="booking-panel" data-step="4"><div class="booking-summary" id="bookingSummary"></div><div class="booking-form-fields"><input type="text" id="bookingName" placeholder="Ваше имя" class="booking-input"><input type="tel" id="bookingPhone" placeholder="Телефон для связи" class="booking-input"></div><div class="booking-success" id="bookingSuccess"><div class="booking-success-icon"><i class="fas fa-check-circle"></i></div><h3>Заявка отправлена!</h3><p>Спасибо! Ваша заявка успешно отправлена. Мы свяжемся с вами для подтверждения записи.</p></div></div>
+<div class="booking-nav"><button type="button" class="booking-btn booking-btn-back" id="bookingBack">Назад</button><button type="button" class="booking-btn booking-btn-next" id="bookingNext">Далее</button><button type="button" class="booking-btn booking-btn-submit" id="bookingSubmit">Отправить заявку</button><button type="button" class="booking-btn booking-btn-restart" id="bookingRestart">Новая запись</button></div>
+</div></div></section>
 
-      <div class="booking-panel active" data-step="1">
-        <div class="booking-panel-title">Выберите одну или несколько услуг</div>
-        <div class="booking-services-list">
-          <label class="booking-service-item"><input type="checkbox" name="service" value="Классический маникюр" data-price="900"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Классический маникюр</span><span class="booking-service-price">900 ₽</span></label>
-          <label class="booking-service-item"><input type="checkbox" name="service" value="Маникюр + гель-лак" data-price="1700"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Маникюр + гель-лак</span><span class="booking-service-price">1 700 ₽</span></label>
-          <label class="booking-service-item"><input type="checkbox" name="service" value="Наращивание гелем" data-price="2800"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Наращивание гелем</span><span class="booking-service-price">2 800 ₽</span></label>
-          <label class="booking-service-item"><input type="checkbox" name="service" value="Женский педикюр" data-price="2000"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Женский педикюр</span><span class="booking-service-price">2 000 ₽</span></label>
-          <label class="booking-service-item"><input type="checkbox" name="service" value="Мужской маникюр" data-price="1100"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Мужской маникюр</span><span class="booking-service-price">1 100 ₽</span></label>
-          <label class="booking-service-item"><input type="checkbox" name="service" value="Аппаратный маникюр" data-price="1400"><span class="check-box"><i class="fas fa-check"></i></span><span class="booking-service-name">Аппаратный маникюр</span><span class="booking-service-price">1 400 ₽</span></label>
-        </div>
-      </div>
+<section id="gallery"><div class="container"><div class="section-eyebrow reveal">Портфолио</div><h2 class="section-title reveal">Наши <span>работы</span></h2><div class="gallery-grid">
+<div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1200&q=85" alt="Маникюр">​</div>
+<div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1000&q=85" alt="Маникюр">​</div>
+<div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=1000&q=85" alt="Nail art">​</div>
+<div class="gallery-item reveal"><img src="https://nehtyprofi.s2.cdn-upgates.com/_cache/1/b/1b9560c67a731268be004e081d20478c-4a8u3s3rih9smwuaxpsqb4lsg1dwy7ajl803izkhg72gz2hu2t7ybwjed3iuifao.jpg" alt="Маникюр в салоне">​</div>
+<div class="gallery-item reveal"><img src="https://images.cdn-files-a.com/uploads/5590846/2000_626df2c522210.jpg" alt="Золотой nail art">​</div>
+<div class="gallery-item reveal"><img src="https://luxurynailsspalancaster.com/wp-content/uploads/2025/03/nail-art-flowers-scaled-2.jpg" alt="Дизайн ногтей">​</div>
+<div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=1000&q=85" alt="Маникюр">​</div>
+<div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1000&q=85" alt="Маникюр и уход">​</div>
+<div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=1000&q=75&sat=-10" alt="Маникюр в студии">​</div>
+</div></div></section>
 
-      <div class="booking-panel" data-step="2">
-        <div class="booking-panel-title">Выберите мастера</div>
-        <div class="booking-masters-list">
-          <label class="booking-master-item"><input type="radio" name="master" value="Алина"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">Алина</span><span class="booking-master-role">Топ-мастер</span></label>
-          <label class="booking-master-item"><input type="radio" name="master" value="Динара"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">Динара</span><span class="booking-master-role">Маникюр и педикюр</span></label>
-          <label class="booking-master-item"><input type="radio" name="master" value="Ксения"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">Ксения</span><span class="booking-master-role">Наращивание</span></label>
-          <label class="booking-master-item"><input type="radio" name="master" value="Любой свободный"><span class="master-radio-photo"><i class="fas fa-users"></i></span><span class="booking-master-name">Не важно</span><span class="booking-master-role">Любой свободный мастер</span></label>
-        </div>
-      </div>
+<section id="contacts"><div class="container"><div class="section-eyebrow reveal">Контакты</div><h2 class="section-title reveal">Как <span>нас найти</span></h2><div class="contacts-grid"><div class="contacts-info reveal">
+<p class="contact-item"><i class="fas fa-map-pin"></i><span class="contact-copy"><span class="contact-label">Адрес</span><span>Тюмень, Краснооктябрьская ул., 8 (ДОК, офис 393)</span></span></p>
+<p class="contact-item"><i class="fas fa-phone-alt"></i><span class="contact-copy"><span class="contact-label">Телефон</span><span class="phone-list"><a href="tel:+79222592828">+7 (922) 259-28-28</a><a href="tel:+79223035555">+7 (922) 303-55-55</a><a href="tel:+79292040202">+7 (929) 204-02-02</a></span></span></p>
+<p class="contact-item"><i class="fas fa-clock"></i><span class="contact-copy"><span class="contact-label">Время работы</span><span>Ежедневно с 10:00 до 22:00</span></span></p>
+<a href="#booking" class="btn-primary">Записаться онлайн</a>
+</div><div class="map-wrapper reveal"><iframe src="https://yandex.ru/map-widget/v1/?ll=65.516145%2C57.186858&z=16&l=map&pt=65.516145,57.186858,pm2rdm" width="100%" height="320" frameborder="0" allowfullscreen="true" style="border-radius:20px;border:1px solid #e7ddd3;display:block;"></iframe></div></div></div></section>
 
-      <div class="booking-panel" data-step="3">
-        <div class="booking-panel-title">Выберите дату</div>
-        <div class="booking-dates-list" id="bookingDates"></div>
-        <div class="booking-panel-title booking-panel-title-time">Выберите время</div>
-        <div class="booking-times-list" id="bookingTimes"><div class="booking-times-placeholder">Сначала выберите дату</div></div>
-      </div>
-
-      <div class="booking-panel" data-step="4">
-        <div class="booking-summary" id="bookingSummary"></div>
-        <div class="booking-form-fields">
-          <input type="text" id="bookingName" placeholder="Ваше имя" class="booking-input">
-          <input type="tel" id="bookingPhone" placeholder="Телефон для связи" class="booking-input">
-        </div>
-        <div class="booking-success" id="bookingSuccess">
-          <div class="booking-success-icon"><i class="fas fa-check-circle"></i></div>
-          <h3>Заявка отправлена!</h3>
-          <p>Спасибо! Ваша заявка успешно отправлена. Мы свяжемся с вами для подтверждения записи.</p>
-        </div>
-      </div>
-
-      <div class="booking-nav">
-        <button type="button" class="booking-btn booking-btn-back" id="bookingBack">Назад</button>
-        <button type="button" class="booking-btn booking-btn-next" id="bookingNext">Далее</button>
-        <button type="button" class="booking-btn booking-btn-submit" id="bookingSubmit">Отправить заявку</button>
-        <button type="button" class="booking-btn booking-btn-restart" id="bookingRestart">Новая запись</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== ГАЛЕРЕЯ ===== -->
-<section id="gallery">
-  <div class="container">
-    <div class="section-eyebrow reveal">Портфолио</div>
-    <h2 class="section-title reveal">Наши <span>работы</span></h2>
-    <div class="gallery-grid">
-      <div class="gallery-item reveal"><i class="fas fa-hand-sparkles"></i></div>
-      <div class="gallery-item reveal"><i class="fas fa-paint-brush"></i></div>
-      <div class="gallery-item reveal"><i class="fas fa-gem"></i></div>
-      <div class="gallery-item reveal"><i class="fas fa-shoe-prints"></i></div>
-      <div class="gallery-item reveal"><i class="fas fa-magic"></i></div>
-      <div class="gallery-item reveal"><i class="fas fa-star"></i></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== КОНТАКТЫ ===== -->
-<section id="contacts">
-  <div class="container">
-    <div class="section-eyebrow reveal">Контакты</div>
-    <h2 class="section-title reveal">Как <span>нас найти</span></h2>
-    <div class="contacts-grid">
-      <div class="contacts-info reveal">
-        <p class="contact-item">
-          <i class="fas fa-map-pin"></i>
-          <span class="contact-copy"><span class="contact-label">Адрес</span><span>Тюмень, Краснооктябрьская ул., 8 (ДОК, офис 393)</span></span>
-        </p>
-        <p class="contact-item">
-          <i class="fas fa-phone-alt"></i>
-          <span class="contact-copy"><span class="contact-label">Телефон</span><span class="phone-list"><a href="tel:+79222592828">+7 (922) 259-28-28</a><a href="tel:+79223035555">+7 (922) 303-55-55</a><a href="tel:+79292040202">+7 (929) 204-02-02</a></span></span>
-        </p>
-        <p class="contact-item">
-          <i class="fas fa-clock"></i>
-          <span class="contact-copy"><span class="contact-label">Время работы</span><span>Ежедневно с 10:00 до 22:00</span></span>
-        </p>
-        <a href="#booking" class="btn-primary">Записаться онлайн</a>
-      </div>
-      <div class="map-wrapper reveal">
-        <iframe src="https://yandex.ru/map-widget/v1/?ll=65.516145%2C57.186858&z=16&l=map&pt=65.516145,57.186858,pm2rdm" width="100%" height="320" frameborder="0" allowfullscreen="true" style="border-radius:20px;border:1px solid #e7ddd3;display:block;"></iframe>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== ПОДВАЛ ===== -->
-<footer>
-  <div class="logo" style="justify-content:center; margin-bottom:0.5rem;">
-    <div class="logo-mark"><i class="fas fa-spa"></i></div>
-    <div class="logo-text">НОГТИ <span>ТУТ</span></div>
-  </div>
-  <div class="footer-menu">
-    <a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#gallery">Работы</a><a href="#contacts">Контакты</a>
-  </div>
-  <div class="footer-copy">© Ногти тут — демо-сайт (прототип для предложения)</div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+<footer><div class="logo" style="justify-content:center;margin-bottom:.5rem;"><div class="logo-mark"><i class="fas fa-spa"></i></div><div class="logo-text">НОГТИ <span>ТУТ</span></div></div><div class="footer-menu"><a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#gallery">Работы</a><a href="#contacts">Контакты</a></div><div class="footer-copy">© Ногти тут — демо-сайт (прототип для предложения)</div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="script.js"></script>
 </body>
 </html>
