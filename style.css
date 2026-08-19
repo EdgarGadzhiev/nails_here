@@ -250,6 +250,15 @@ header {
   padding: 130px 20px 70px;
 }
 
+.hero-wave {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 60px;
+  fill: var(--bg);
+}
+
 .hero .container {
   display: grid;
   grid-template-columns: 1.05fr 0.8fr;
@@ -261,6 +270,8 @@ header {
 .hero-content {
   animation: heroFadeUp 1s var(--ease) both;
   text-align: left;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes heroFadeUp {
@@ -359,23 +370,32 @@ header {
   justify-content: center;
   animation: heroFadeUp 1.2s var(--ease) both;
   animation-delay: 0.1s;
+  z-index: 1;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .hero-visual-ring {
-  position: absolute;
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
-  background: linear-gradient(155deg, var(--accent-light) 0%, var(--bg-soft) 60%, var(--blush) 100%);
+  position: relative;
+  width: min(300px, 82%);
+  aspect-ratio: 1;
+  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  background: linear-gradient(155deg, var(--accent-light) 0%, var(--bg-soft) 55%, var(--blush) 100%);
   box-shadow: var(--shadow-lg);
+  animation: blobMorph 12s ease-in-out infinite;
+}
+
+@keyframes blobMorph {
+  0%, 100% { border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; }
+  50% { border-radius: 60% 40% 38% 62% / 55% 62% 38% 45%; }
 }
 
 .hero-visual-ring::before {
   content: '';
   position: absolute;
-  inset: 26px;
-  border-radius: 50%;
-  border: 1.5px dashed rgba(255, 255, 255, 0.55);
+  inset: 22px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.5), transparent 60%);
 }
 
 .hero-visual-badge {
@@ -407,12 +427,12 @@ header {
 
 .badge-top {
   top: 6%;
-  left: -4%;
+  left: 2%;
 }
 
 .badge-bottom {
   bottom: 8%;
-  right: -6%;
+  right: 2%;
   animation-delay: 1.4s;
 }
 
@@ -687,17 +707,31 @@ header {
 
 /* ===== ПОДВАЛ ===== */
 footer {
-  background: var(--ink);
-  color: #d8ccbe;
+  background: var(--bg-soft);
+  color: var(--text-muted);
   padding: 4rem 1.5rem 2rem;
   text-align: center;
+  border-top: 1px solid var(--border);
+  position: relative;
 }
 
-footer .logo-text { color: #f4ede2; }
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+footer .logo-text { color: var(--text); }
 
 footer .logo-mark {
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 
 .footer-menu {
@@ -709,19 +743,19 @@ footer .logo-mark {
 }
 
 .footer-menu a {
-  color: #b7a999;
+  color: var(--text-muted);
   font-size: 0.92rem;
   transition: color 0.3s ease;
 }
 
 .footer-menu a:hover {
-  color: var(--accent-light);
+  color: var(--accent-dark);
 }
 
 .footer-copy {
-  color: #7a6c5c;
+  color: #b3a493;
   font-size: 0.8rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border);
   padding-top: 1.6rem;
   margin-top: 0.6rem;
 }
@@ -1238,7 +1272,7 @@ footer .logo-mark {
   .hero-btns { justify-content: center; }
 
   .hero-visual { height: 300px; order: -1; margin-bottom: 10px; }
-  .hero-visual-ring { width: 240px; height: 240px; }
+  .hero-visual-ring { width: min(240px, 70%); }
 
   .services-grid,
   .masters-grid,
@@ -1287,7 +1321,7 @@ footer .logo-mark {
   .hero-btns a { width: 100%; }
 
   .hero-visual { height: 220px; }
-  .hero-visual-ring { width: 170px; height: 170px; }
+  .hero-visual-ring { width: min(170px, 65%); }
   .hero-visual-badge { padding: 0.65rem 0.85rem; font-size: 0.74rem; gap: 8px; }
   .hero-visual-badge i { font-size: 0.95rem; }
   .hero-visual-badge span { font-size: 0.66rem; }
