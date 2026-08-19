@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Админ-панель — Ногти тут</title>
   <link rel="stylesheet" href="admin.css?v=20260819-4">
+  <style>#adminSalonField[hidden]{display:none!important}</style>
 </head>
 <body>
   <main class="admin-shell">
@@ -27,7 +28,7 @@
             <div class="form-actions"><button class="primary-btn" type="submit" id="saveAdminBtn">Добавить администратора</button><button class="secondary-btn" type="button" id="cancelAdminBtn">Отмена</button></div><div class="error" id="adminFormError"></div>
           </form>
         </div>
-        <div class="people-list" id="peopleList"></div><div class="loading people-loading" id="peopleLoading">Загрузка пользователей…</div><div class="empty people-empty" id="peopleEmpty" hidden><h3>Администраторов пока нет</h3><p>Добавь первого администратора для этого салона.</p></div>
+        <div class="people-list" id="peopleList"></div><div class="loading people-loading" id="peopleLoading" hidden>Загрузка пользователей…</div><div class="empty people-empty" id="peopleEmpty" hidden><h3>Администраторов пока нет</h3><p>Добавь первого администратора для этого салона.</p></div>
       </section>
       <section class="panel" id="appointmentsPanel"><div class="panel-head"><div><h2>Все записи</h2><p class="muted">Последние заявки отображаются сверху.</p></div><div class="filters"><select id="salonFilter" hidden aria-label="Выбор салона"><option value="all">Все салоны</option></select><select id="statusFilter"><option value="all">Все статусы</option><option value="new">Новые</option><option value="confirmed">Подтверждённые</option><option value="done">Завершённые</option><option value="cancelled">Отменённые</option></select></div></div><section class="stats-grid appointments-stats"><article class="stat-card"><span>Всего заявок</span><strong id="totalCount">0</strong></article><article class="stat-card"><span>Новые</span><strong id="newCount">0</strong></article><article class="stat-card"><span>На сегодня</span><strong id="todayCount">0</strong></article></section><div class="table-wrap"><table><thead><tr><th>Клиент</th><th>Телефон</th><th>Услуги</th><th>Мастер</th><th>Дата</th><th>Время</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="appointmentsBody"></tbody></table></div><div class="empty" id="emptyState" hidden><div class="empty-icon">♡</div><h3>Заявок пока нет</h3><p>Когда клиент заполнит форму на сайте, заявка появится здесь.</p></div><div class="loading" id="loadingState" hidden>Загрузка заявок…</div><div class="error table-error" id="tableError"></div></section>
     </section>
