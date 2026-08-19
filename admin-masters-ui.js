@@ -7,36 +7,26 @@
 
       if (functionName === 'create-salon-admin') {
         const checkbox = document.getElementById('adminIsMaster');
+        const nameInput = document.getElementById('adminDisplayName');
         body.isMaster = !!checkbox?.checked;
+        body.displayName = nameInput?.value?.trim() || '';
       }
 
       if (functionName === 'create-salon-owner') {
         const checkbox = document.getElementById('ownerIsMaster');
+        const nameInput = document.getElementById('ownerDisplayName');
         body.isMaster = !!checkbox?.checked;
+        body.displayName = nameInput?.value?.trim() || '';
       }
 
       if (functionName === 'assign-salon-owner') {
         const checkbox = document.getElementById('adminIsMaster');
+        const nameInput = document.getElementById('adminDisplayName');
         body.isMaster = !!checkbox?.checked;
+        body.displayName = nameInput?.value?.trim() || '';
       }
 
       return originalInvoke(functionName, { ...options, body });
     };
   })();
-
-  function decoratePeople() {
-    document.querySelectorAll('.person-row').forEach(row => {
-      if (row.querySelector('.master-badge')) return;
-      const text = row.textContent || '';
-      if (!/OWNER|ADMIN/.test(text)) return;
-      const badge = document.createElement('span');
-      badge.className = 'master-badge';
-      badge.textContent = 'Мастер определяется настройкой аккаунта';
-      badge.hidden = true;
-      row.querySelector('div')?.appendChild(badge);
-    });
-  }
-
-  const observer = new MutationObserver(decoratePeople);
-  observer.observe(document.body, { childList: true, subtree: true });
 })();
