@@ -72,6 +72,10 @@ if (revealEls.length && 'IntersectionObserver' in window) {
   const nameInput = document.getElementById('bookingName');
   const phoneInput = document.getElementById('bookingPhone');
 
+  // Success-state is hidden until Supabase confirms a successful request.
+  successBox.classList.remove('active');
+  successBox.style.display = 'none';
+
   const WEEKDAYS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
   const TIME_SLOTS = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
 
@@ -207,6 +211,18 @@ if (revealEls.length && 'IntersectionObserver' in window) {
     submitBtn.style.display = step === TOTAL_STEPS ? 'block' : 'none';
     restartBtn.style.display = 'none';
 
+    // A success message belongs only to the completed submission state.
+    if (step !== TOTAL_STEPS) {
+      successBox.classList.remove('active');
+      successBox.style.display = 'none';
+    } else {
+      successBox.classList.remove('active');
+      successBox.style.display = 'none';
+      const formFields = widget.querySelector('.booking-form-fields');
+      if (formFields) formFields.style.display = 'flex';
+      summaryBox.style.display = 'block';
+    }
+
     if (step === 3 && !datesList.children.length) renderDates();
     if (step === 4) renderSummary();
 
@@ -260,12 +276,13 @@ if (revealEls.length && 'IntersectionObserver' in window) {
 
       console.log('Заявка успешно отправлена в Supabase');
 
-      const formFields = document.querySelector('.booking-form-fields');
+      const formFields = widget.querySelector('.booking-form-fields');
       if (formFields) formFields.style.display = 'none';
 
       summaryBox.style.display = 'none';
       submitBtn.style.display = 'none';
       backBtn.style.display = 'none';
+      successBox.style.display = 'block';
       successBox.classList.add('active');
       restartBtn.style.display = 'block';
 
@@ -297,11 +314,12 @@ if (revealEls.length && 'IntersectionObserver' in window) {
     nameInput.value = '';
     phoneInput.value = '';
 
-    const formFields = document.querySelector('.booking-form-fields');
+    const formFields = widget.querySelector('.booking-form-fields');
     if (formFields) formFields.style.display = 'flex';
 
     summaryBox.style.display = 'block';
     successBox.classList.remove('active');
+    successBox.style.display = 'none';
     submitBtn.textContent = 'Отправить заявку';
     submitBtn.disabled = true;
 
