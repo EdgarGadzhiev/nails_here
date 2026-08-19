@@ -1,0 +1,160 @@
+name: Add reviews section
+
+on:
+  push:
+    paths:
+      - '.github/reviews-trigger'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  add-reviews:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Insert reviews section
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+
+          if 'id="reviews"' in html:
+              print('Reviews section already exists')
+              raise SystemExit(0)
+
+          marker = '<section id="contacts">'
+          if marker not in html:
+              raise SystemExit('Contacts section marker not found')
+
+          block = r'''
+          <section id="reviews">
+            <div class="container">
+              <div class="section-eyebrow reveal">Отзывы</div>
+              <h2 class="section-title reveal">Что говорят <span>клиенты</span></h2>
+              <div class="reviews-slider reveal">
+                <button class="reviews-arrow reviews-arrow-prev" type="button" aria-label="Предыдущий отзыв">
+                  <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="reviews-viewport">
+                  <div class="reviews-track">
+                    <article class="review-card">
+                      <div class="review-stars" aria-label="5 из 5">★★★★★</div>
+                      <p>«Очень понравилось! Всё аккуратно, красиво и без спешки. Мастер внимательно выслушала мои пожелания, результат получился именно таким, как я хотела.»</p>
+                      <div class="review-author"><strong>Анастасия</strong><span>Клиент студии</span></div>
+                    </article>
+                    <article class="review-card">
+                      <div class="review-stars" aria-label="5 из 5">★★★★★</div>
+                      <p>«Прекрасная студия и очень приятная атмосфера. Маникюр получился аккуратным, покрытие ровное, а мастер была очень внимательной. Обязательно вернусь снова.»</p>
+                      <div class="review-author"><strong>Екатерина</strong><span>Клиент студии</span></div>
+                    </article>
+                    <article class="review-card">
+                      <div class="review-stars" aria-label="5 из 5">★★★★★</div>
+                      <p>«Записалась онлайн, всё оказалось максимально удобно. Работа выполнена качественно, инструменты стерильные, персонал вежливый. Осталась очень довольна.»</p>
+                      <div class="review-author"><strong>Мария</strong><span>Клиент студии</span></div>
+                    </article>
+                    <article class="review-card">
+                      <div class="review-stars" aria-label="5 из 5">★★★★★</div>
+                      <p>«Наконец нашла мастера, к которому хочется возвращаться. Очень аккуратная работа, красивый дизайн и приятное общение. Спасибо за мои идеальные ногти!»</p>
+                      <div class="review-author"><strong>Полина</strong><span>Клиент студии</span></div>
+                    </article>
+                    <article class="review-card">
+                      <div class="review-stars" aria-label="5 из 5">★★★★★</div>
+                      <p>«Всё на высшем уровне — от записи до результата. Очень уютно, чисто и красиво. Маникюр носится отлично, обязательно приду ещё.»</p>
+                      <div class="review-author"><strong>Виктория</strong><span>Клиент студии</span></div>
+                    </article>
+                  </div>
+                </div>
+                <button class="reviews-arrow reviews-arrow-next" type="button" aria-label="Следующий отзыв">
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+              <div class="reviews-dots" aria-label="Навигация по отзывам"></div>
+            </div>
+          </section>
+
+          <style>
+            #reviews { overflow: hidden; }
+            .reviews-slider { position: relative; display: flex; align-items: center; gap: 22px; max-width: 1060px; margin: 0 auto; }
+            .reviews-viewport { flex: 1; overflow: hidden; min-width: 0; }
+            .reviews-track { display: flex; transition: transform .55s cubic-bezier(.16,1,.3,1); will-change: transform; }
+            .review-card { flex: 0 0 100%; box-sizing: border-box; padding: 42px clamp(28px,5vw,64px); min-height: 300px; border: 1px solid rgba(55,37,27,.08); border-radius: 26px; background: rgba(255,255,255,.72); box-shadow: 0 18px 45px rgba(55,37,27,.07); display: flex; flex-direction: column; justify-content: center; text-align: center; }
+            .review-stars { color: #c28e5d; font-size: 1.15rem; letter-spacing: .2em; margin-bottom: 20px; }
+            .review-card p { max-width: 760px; margin: 0 auto 26px; color: #5b4639; font-size: 1.05rem; line-height: 1.8; }
+            .review-author { display: flex; flex-direction: column; gap: 4px; }
+            .review-author strong { color: #37251b; font-size: 1rem; }
+            .review-author span { color: #9a8576; font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; }
+            .reviews-arrow { flex: 0 0 50px; width: 50px; height: 50px; border: 1px solid rgba(55,37,27,.10); border-radius: 50%; background: #fff; color: #5a4030; display: grid; place-items: center; cursor: pointer; box-shadow: 0 10px 25px rgba(55,37,27,.10); transition: .3s cubic-bezier(.16,1,.3,1); z-index: 2; }
+            .reviews-arrow:hover:not(:disabled) { background: #c28e5d; color: #fff; transform: translateY(-2px); box-shadow: 0 14px 30px rgba(55,37,27,.16); }
+            .reviews-arrow:disabled { opacity: .3; cursor: default; box-shadow: none; }
+            .reviews-dots { display: flex; justify-content: center; gap: 7px; margin-top: 22px; }
+            .reviews-dot { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: #d9c7b8; cursor: pointer; transition: .3s ease; }
+            .reviews-dot.active { width: 22px; border-radius: 999px; background: #c28e5d; }
+            @media (max-width: 640px) {
+              .reviews-slider { gap: 8px; }
+              .reviews-arrow { flex-basis: 42px; width: 42px; height: 42px; }
+              .review-card { min-height: 340px; padding: 34px 22px; border-radius: 22px; }
+              .review-card p { font-size: .96rem; line-height: 1.7; }
+            }
+          </style>
+
+          <script>
+            (() => {
+              const section = document.getElementById('reviews');
+              if (!section) return;
+              const track = section.querySelector('.reviews-track');
+              const cards = [...section.querySelectorAll('.review-card')];
+              const prev = section.querySelector('.reviews-arrow-prev');
+              const next = section.querySelector('.reviews-arrow-next');
+              const dots = section.querySelector('.reviews-dots');
+              let index = 0;
+
+              cards.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'reviews-dot' + (i === 0 ? ' active' : '');
+                dot.type = 'button';
+                dot.setAttribute('aria-label', `Отзыв ${i + 1}`);
+                dot.addEventListener('click', () => goTo(i));
+                dots.appendChild(dot);
+              });
+
+              function goTo(nextIndex) {
+                index = Math.max(0, Math.min(cards.length - 1, nextIndex));
+                track.style.transform = `translateX(-${index * 100}%)`;
+                prev.disabled = index === 0;
+                next.disabled = index === cards.length - 1;
+                dots.querySelectorAll('.reviews-dot').forEach((dot, i) => dot.classList.toggle('active', i === index));
+              }
+
+              prev.addEventListener('click', () => goTo(index - 1));
+              next.addEventListener('click', () => goTo(index + 1));
+              goTo(0);
+            })();
+          </script>
+          '''
+
+          html = html.replace(marker, block + '\n' + marker, 1)
+          path.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Add five-star reviews section"
+          git push
+
+      - name: Remove temporary workflow
+        if: success()
+        run: |
+          git rm -f .github/workflows/add-reviews.yml .github/reviews-trigger || true
+          git commit -m "Remove temporary reviews setup" || true
+          git push || true
