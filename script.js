@@ -17,7 +17,7 @@ if (revealEls.length && 'IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('is-visible'); revealObserver.unobserve(entry.target); }
   }), { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-  revealEls.forEach(el => el.classList.add('is-visible'));
+  revealEls.forEach(el => revealObserver.observe(el));
 } else revealEls.forEach(el => el.classList.add('is-visible'));
 
 (function () {
@@ -136,5 +136,12 @@ if (revealEls.length && 'IntersectionObserver' in window) {
 (() => {
   const style=document.createElement('style');
   style.textContent=`.booking-time-item.booking-time-busy{opacity:.45;cursor:not-allowed!important;background:#f1ece7!important;color:#8d7c70!important;border-color:#e2d8d0!important;transform:none!important;box-shadow:none!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px}.booking-time-busy small{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#a08d80}.booking-times-placeholder.booking-no-slots{grid-column:1/-1;padding:16px;text-align:center;color:#8b796c}`;
+  document.head.appendChild(style);
+})();
+
+// Restore the booking UI styling that existed before the master-sync change.
+(() => {
+  const style=document.createElement('style');
+  style.textContent=`.booking-widget{max-width:980px;padding:clamp(24px,4vw,46px);border-radius:30px}.booking-steps{justify-content:space-between;gap:8px;padding:0 4px 8px}.step-circle{width:40px;height:40px;font-weight:800;box-shadow:0 5px 15px rgba(55,37,27,.06)}.booking-step.active .step-circle{background:var(--brand);border-color:var(--brand);box-shadow:0 9px 22px rgba(194,142,93,.25)}.booking-step.done .step-circle{background:var(--ink);border-color:var(--ink);color:#fff}.booking-step.done{color:var(--ink)}.booking-step-line{flex:1;max-width:110px;height:2px;background:#eadfd4}.booking-panel-title{font-size:1.65rem;margin-bottom:20px}.booking-service-item,.booking-master-item{min-height:66px;padding:15px 18px;border-radius:16px;box-shadow:0 5px 16px rgba(55,37,27,.025)}.check-box{width:23px;height:23px;border-radius:7px}.booking-date-item,.booking-time-item{min-height:58px;display:grid;place-items:center;transition:.25s var(--ease)}.booking-date-item:hover,.booking-time-item:hover{transform:translateY(-2px);border-color:rgba(194,142,93,.55);box-shadow:0 8px 18px rgba(55,37,27,.06)}.booking-nav{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}.booking-btn{min-width:142px;min-height:48px;padding:0 22px;border-radius:12px;border:1px solid rgba(36,27,23,.14);background:#fff;color:var(--ink);font-weight:800;box-shadow:0 7px 18px rgba(55,37,27,.06)}.booking-btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none}.booking-btn-next,.booking-btn-submit{background:var(--ink);color:#fff;border-color:var(--ink)}.booking-btn-restart{margin-left:auto;background:var(--brand);color:#fff;border-color:var(--brand)}.booking-summary{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff}.booking-summary-row{display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid var(--line)}.booking-summary-row:last-child{border-bottom:0}.booking-summary-label{color:var(--muted);font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.booking-success{border-radius:20px;background:linear-gradient(145deg,#fffdf9,#f4e5d5);padding:34px 24px;text-align:center;border:1px solid rgba(194,142,93,.2)}`;
   document.head.appendChild(style);
 })();
