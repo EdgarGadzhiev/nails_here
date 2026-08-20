@@ -11,9 +11,7 @@
     const form = document.getElementById('adminForm');
     const password = document.getElementById('adminPasswordInput');
     if (!form || !password) return;
-
     let wrap = document.getElementById('assignOwnerMasterOption');
-
     if (form.dataset.mode === 'owner') {
       if (!wrap) {
         wrap = document.createElement('div');
@@ -40,8 +38,13 @@
   hideAdminMasterOption();
   syncOwnerMasterOption();
 
-  const addAdminBtn = document.getElementById('addAdminBtn');
-  addAdminBtn?.addEventListener('click', () => {
+  document.getElementById('addAdminBtn')?.addEventListener('click', () => {
+    forceAdminMode();
+    setTimeout(forceAdminMode, 0);
+    setTimeout(forceAdminMode, 50);
+  });
+
+  document.getElementById('cancelAdminBtn')?.addEventListener('click', () => {
     setTimeout(forceAdminMode, 0);
   });
 
@@ -54,27 +57,23 @@
   supabaseClient.functions.invoke = (function () {
     return async function (functionName, options = {}) {
       const body = { ...(options.body || {}) };
-
       if (functionName === 'create-salon-admin') {
         const nameInput = document.getElementById('adminDisplayName');
         body.isMaster = true;
         body.displayName = nameInput?.value?.trim() || '';
       }
-
       if (functionName === 'create-salon-owner') {
         const checkbox = document.getElementById('ownerIsMaster');
         const nameInput = document.getElementById('ownerDisplayName');
         body.isMaster = !!checkbox?.checked;
         body.displayName = nameInput?.value?.trim() || '';
       }
-
       if (functionName === 'assign-salon-owner') {
         const nameInput = document.getElementById('adminDisplayName');
         const checkbox = document.getElementById('assignOwnerIsMaster');
         body.isMaster = !!checkbox?.checked;
         body.displayName = nameInput?.value?.trim() || '';
       }
-
       return originalInvoke(functionName, { ...options, body });
     };
   })();
