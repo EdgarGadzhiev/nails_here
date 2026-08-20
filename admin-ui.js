@@ -102,8 +102,6 @@
       if (error) throw error;
       if (version !== syncVersion) return;
 
-      // Синхронизируем глобальный профиль с тем же пользователем,
-      // которого сейчас вернул Supabase Auth.
       currentProfile = profile || null;
 
       if (!profile?.role) {
@@ -167,8 +165,6 @@
   window.addEventListener('scroll', updateActiveSectionByScroll, { passive: true });
   window.addEventListener('resize', updateActiveSectionByScroll);
 
-  // Не доверяем старому состоянию currentProfile при переключении аккаунтов.
-  // Всегда заново читаем роль у текущего auth.uid().
   supabaseClient.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT' || !session?.user) {
       syncVersion += 1;
@@ -183,4 +179,10 @@
   });
 
   window.setTimeout(syncRoleUI, 50);
+
+  // Automatic appointment statuses are calculated from creation date and scheduled time.
+  const statusScript = document.createElement('script');
+  statusScript.src = `admin-status-ui.js?v=${Date.now()}`;
+  statusScript.async = false;
+  document.body.appendChild(statusScript);
 })();
