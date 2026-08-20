@@ -41,7 +41,6 @@ if (revealEls.length && 'IntersectionObserver' in window) {
   const successBox=document.getElementById('bookingSuccess');
   const nameInput=document.getElementById('bookingName');
   const phoneInput=document.getElementById('bookingPhone');
-  const masterInputs=widget.querySelectorAll('input[name="master"]');
   successBox.classList.remove('active'); successBox.style.display='none';
 
   async function loadMasters(){
@@ -51,15 +50,21 @@ if (revealEls.length && 'IntersectionObserver' in window) {
     MASTERS=rows.map(row=>({id:row.id,name:row.display_name||'Мастер'}));
     const masterPanel=widget.querySelector('[data-step="2"]');
     if(masterPanel){
-      const group=masterPanel.querySelector('.booking-options, .booking-master-options, .master-options') || masterPanel;
-      masterInputs.forEach(el=>{const label=el.closest('label')||el.closest('.booking-option')||el.parentElement;if(label)label.remove();});
+      const group=masterPanel.querySelector('.booking-masters-list');
+      if(!group) return;
+      group.innerHTML='';
       MASTERS.forEach(master=>{
         const label=document.createElement('label');
-        label.className='booking-option';
-        label.innerHTML=`<input type="radio" name="master" value="${String(master.id).replace(/"/g,'&quot;')}"><span>${String(master.name).replace(/[&<>]/g,'')}</span>`;
+        label.className='booking-master-item';
+        label.innerHTML=`<input type="radio" name="master" value="${String(master.id).replace(/"/g,'&quot;')}"><span class="master-radio-photo"><i class="fas fa-user"></i></span><span class="booking-master-name">${String(master.name).replace(/[&<>]/g,'')}</span><span class="booking-master-role">Мастер</span>`;
         group.appendChild(label);
         label.querySelector('input').addEventListener('change',async()=>{state.master=master.id;state.time=null;if(state.date)await renderTimes();validateStep();});
       });
+      const anyLabel=document.createElement('label');
+      anyLabel.className='booking-master-item';
+      anyLabel.innerHTML='<input type="radio" name="master" value="Любой свободный"><span class="master-radio-photo"><i class="fas fa-users"></i></span><span class="booking-master-name">Не важно</span><span class="booking-master-role">Любой свободный мастер</span>';
+      group.appendChild(anyLabel);
+      anyLabel.querySelector('input').addEventListener('change',async()=>{state.master='Любой свободный';state.time=null;if(state.date)await renderTimes();validateStep();});
     }
   }
 
@@ -105,7 +110,7 @@ if (revealEls.length && 'IntersectionObserver' in window) {
   widget.querySelectorAll('input[name="service"]').forEach(checkbox=>checkbox.addEventListener('change',()=>{state.services=Array.from(widget.querySelectorAll('input[name="service"]:checked')).map(el=>({name:el.value,price:parseInt(el.dataset.price,10)}));validateStep();}));
   function validateStep(){let valid=false;if(currentStep===1)valid=state.services.length>0;else if(currentStep===2)valid=!!state.master;else if(currentStep===3)valid=!!state.date&&!!state.time;else valid=nameInput.value.trim()!==''&&phoneInput.value.trim()!=='';if(currentStep===TOTAL_STEPS)submitBtn.disabled=!valid;else nextBtn.disabled=!valid;}
   nameInput.addEventListener('input',validateStep); phoneInput.addEventListener('input',validateStep);
-  function renderSummary(){const total=state.services.reduce((sum,s)=>sum+s.price,0);const masterName=MASTERS.find(m=>String(m.id)===String(state.master))?.name||'Мастер';summaryBox.innerHTML=`<div class="booking-summary-row"><span class="booking-summary-label">Услуги</span><span>${state.services.map(s=>s.name).join(', ')}</span></div><div class="booking-summary-row"><span class="booking-summary-label">Мастер</span><span>${masterName}</span></div><div class="booking-summary-row"><span class="booking-summary-label">Дата и время</span><span>${state.date.label}, ${state.time}</span></div><div class="booking-summary-row"><span class="booking-summary-label">Итого</span><span>${total.toLocaleString('ru-RU')} ₽</span></div>`;}
+  function renderSummary(){const total=state.services.reduce((sum,s)=>sum+s.price,0);const masterName=state.master==='Любой свободный'?'Не важно':(MASTERS.find(m=>String(m.id)===String(state.master))?.name||'Мастер');summaryBox.innerHTML=`<div class="booking-summary-row"><span class="booking-summary-label">Услуги</span><span>${state.services.map(s=>s.name).join(', ')}</span></div><div class="booking-summary-row"><span class="booking-summary-label">Мастер</span><span>${masterName}</span></div><div class="booking-summary-row"><span class="booking-summary-label">Дата и время</span><span>${state.date.label}, ${state.time}</span></div><div class="booking-summary-row"><span class="booking-summary-label">Итого</span><span>${total.toLocaleString('ru-RU')} ₽</span></div>`;}
   function goToStep(step){currentStep=step;panels.forEach(panel=>panel.classList.toggle('active',parseInt(panel.dataset.step,10)===step));stepIndicators.forEach(indicator=>{const n=parseInt(indicator.dataset.stepIndicator,10);indicator.classList.toggle('active',n===step);indicator.classList.toggle('done',n<step);});backBtn.style.display=step===1?'none':'block';nextBtn.style.display=step===TOTAL_STEPS?'none':'block';submitBtn.style.display=step===TOTAL_STEPS?'block':'none';restartBtn.style.display='none';if(step!==TOTAL_STEPS){successBox.classList.remove('active');successBox.style.display='none';}else{successBox.classList.remove('active');successBox.style.display='none';const fields=widget.querySelector('.booking-form-fields');if(fields)fields.style.display='flex';summaryBox.style.display='block';}if(step===3&&!datesList.children.length)renderDates();if(step===4)renderSummary();validateStep();}
   nextBtn.addEventListener('click',()=>{if(currentStep<TOTAL_STEPS)goToStep(currentStep+1);});
   backBtn.addEventListener('click',()=>{if(currentStep>1)goToStep(currentStep-1);});
