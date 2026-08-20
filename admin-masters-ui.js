@@ -25,11 +25,25 @@
       wrap.hidden = false;
     } else if (wrap) {
       wrap.hidden = true;
+      const checkbox = document.getElementById('assignOwnerIsMaster');
+      if (checkbox) checkbox.checked = false;
     }
+  };
+
+  const forceAdminMode = () => {
+    const form = document.getElementById('adminForm');
+    if (!form) return;
+    form.dataset.mode = 'admin';
+    syncOwnerMasterOption();
   };
 
   hideAdminMasterOption();
   syncOwnerMasterOption();
+
+  const addAdminBtn = document.getElementById('addAdminBtn');
+  addAdminBtn?.addEventListener('click', () => {
+    setTimeout(forceAdminMode, 0);
+  });
 
   const observer = new MutationObserver(() => {
     hideAdminMasterOption();
