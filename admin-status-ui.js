@@ -1,41 +1,27 @@
 (() => {
-  const STATUS = {
-    NEW: 'new',
-    WAITING: 'confirmed',
-    PAST: 'done'
-  };
+  const STATUS = { NEW: 'new', WAITING: 'confirmed', PAST: 'done' };
 
   function localDateKey(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
   function appointmentDateTime(item) {
     if (!item?.booking_date || !item?.booking_time) return null;
-    const time = String(item.booking_time).slice(0, 8);
     const [y, m, d] = String(item.booking_date).split('-').map(Number);
-    const [hh, mm, ss = 0] = time.split(':').map(Number);
+    const [hh, mm, ss = 0] = String(item.booking_time).slice(0, 8).split(':').map(Number);
     if (![y, m, d, hh, mm].every(Number.isFinite)) return null;
     return new Date(y, m - 1, d, hh, mm, ss);
   }
 
   function deriveStatus(item, now = new Date()) {
     const bookingAt = appointmentDateTime(item);
-
-    // Once the scheduled time has passed, the appointment is always "Прошедшая".
     if (bookingAt && bookingAt <= now) return STATUS.PAST;
 
-    // A new request is "Новая" only during the calendar day on which it was created.
     if (item?.created_at) {
       const created = new Date(item.created_at);
-      if (!Number.isNaN(created.getTime()) && localDateKey(created) === localDateKey(now)) {
-        return STATUS.NEW;
-      }
+      if (!Number.isNaN(created.getTime()) && localDateKey(created) === localDateKey(now)) return STATUS.NEW;
     }
 
-    // Future appointments that are no longer new are simply waiting/expected.
     return STATUS.WAITING;
   }
 
@@ -75,21 +61,28 @@
   function configureFilter() {
     const filter = document.getElementById('statusFilter');
     if (!filter) return;
+    const current = filter.value || 'all';
     filter.innerHTML = '';
-    [
-      ['all', 'Все статусы'],
-      ['new', 'Новые'],
-      ['confirmed', 'Ожидают'],
-      ['done', 'Прошедшие']
-    ].forEach(([value, label]) => {
+    [['all', 'Все статусы'], ['new', 'Новые'], ['confirmed', 'Ожидают'], ['done', 'Прошедшие']].forEach(([value, label]) => {
       const option = document.createElement('option');
       option.value = value;
       option.textContent = label;
       filter.appendChild(option);
     });
+    filter.value = ['all', 'new', 'confirmed', 'done'].includes(current) ? current : 'all';
   }
 
   configureFilter();
+
+  // admin.js загружает заявки асинхронно, поэтому быстро проверяем первые секунды,
+  // затем обновляем статус раз в 30 секунд.
+  let bootstrapChecks = 0;
+  const bootstrapTimer = setInterval(() => {
+    syncStatuses();
+    bootstrapChecks += 1;
+    if (bootstrapChecks >= 20) clearInterval(bootstrapTimer);
+  }, 500);
+
   syncStatuses();
   setInterval(syncStatuses, 30000);
 })();
