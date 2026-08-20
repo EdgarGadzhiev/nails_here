@@ -44,10 +44,10 @@ if (revealEls.length && 'IntersectionObserver' in window) {
   successBox.classList.remove('active'); successBox.style.display='none';
 
   async function loadMasters(){
-    const response=await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=id,display_name&salon_id=eq.${NAILS_HERE_SALON_ID}&is_active=eq.true&is_master=eq.true&order=display_name.asc`,{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}});
+    const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_public_salon_masters`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify({target_salon_id:NAILS_HERE_SALON_ID})});
     if(!response.ok) throw new Error('Не удалось загрузить список мастеров.');
     const rows=await response.json();
-    MASTERS=rows.map(row=>({id:row.id,name:row.display_name||'Мастер'}));
+    MASTERS=(rows||[]).map(row=>({id:row.id,name:(row.display_name||'').trim()||'Мастер',role:row.role}));
     const masterPanel=widget.querySelector('[data-step="2"]');
     if(masterPanel){
       const group=masterPanel.querySelector('.booking-masters-list');
