@@ -1,25 +1,23 @@
 (() => {
   const refreshNames = async () => {
     try {
-      if (!window.supabase || typeof supabaseClient === 'undefined') return;
+      if (typeof supabaseClient === 'undefined') return;
       const { data, error } = await supabaseClient.rpc('get_manageable_users');
       if (error || !Array.isArray(data)) return;
 
-      const byEmail = new Map(
-        data.map(user => [String(user.email || '').trim().toLowerCase(), {
-          name: String(user.display_name || '').trim(),
-          email: String(user.email || '').trim()
-        }])
-      );
+      const users = data.map(user => ({
+        name: String(user.display_name || '').trim(),
+        email: String(user.email || '').trim()
+      }));
 
       document.querySelectorAll('#peopleList .person-row').forEach(row => {
         const strong = row.querySelector('strong');
         if (!strong) return;
 
-        const currentEmail = String(strong.dataset.originalEmail || strong.textContent || '')
-          .trim()
-          .toLowerCase();
-        const user = byEmail.get(currentEmail);
+        const raw = String(strong.dataset.originalEmail || strong.textContent || '').trim();
+        const currentEmail = raw.toLowerCase();
+        const user = users.find(item => item.email.toLowerCase() === currentEmail)
+          || users.find(item => item.name && item.name.toLowerCase() === currentEmail);
         if (!user) return;
 
         strong.dataset.originalEmail = user.email;
