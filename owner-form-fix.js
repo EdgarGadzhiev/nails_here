@@ -29,7 +29,13 @@
 
     try {
       const { data, error } = await client.functions.invoke('create-salon-owner', {
-        body: { salonName: name, ownerDisplayName: ownerName, ownerEmail: email, ownerPassword: password, isMaster }
+        body: {
+          salonName: name,
+          displayName: ownerName,
+          ownerEmail: email,
+          ownerPassword: password,
+          isMaster
+        }
       });
       if (error) throw error;
       if (!data?.success || !data?.salon) throw new Error(data?.error || 'Сервер не подтвердил создание салона.');
